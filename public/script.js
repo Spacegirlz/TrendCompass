@@ -215,7 +215,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ topic })
             });
 
-            const result = await response.json();
+            // Check if response is actually JSON
+            const contentType = response.headers.get("content-type");
+            let result;
+            
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                result = await response.json();
+            } else {
+                // Handle HTML error responses from Vercel
+                const text = await response.text();
+                console.error('Non-JSON response received:', text.substring(0, 200));
+                
+                throw new Error(`Server returned HTML instead of JSON. This usually means:\n1. API endpoint not found\n2. Server configuration issue\n3. Invalid request format\n\nResponse preview: "${text.substring(0, 50)}..."`);
+            }
             
             if (response.ok && result.success) {
                 displayTrendingResults(result);
@@ -332,8 +344,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     platform: 'TikTok' 
                 })
             });
+
+            // Check if response is actually JSON
+            const contentType = response.headers.get("content-type");
+            let result;
             
-            const result = await response.json();
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                result = await response.json();
+            } else {
+                // Handle HTML error responses from Vercel
+                const text = await response.text();
+                console.error('Script API Non-JSON response:', text.substring(0, 200));
+                
+                throw new Error(`Server error: Received HTML instead of JSON.\n\nResponse: "${text.substring(0, 50)}..."`);
+            }
             
             if (response.ok && result.success) {
                 displayScriptResults(result);
@@ -592,7 +616,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(formData)
             });
             
-            const result = await response.json();
+            // Check if response is actually JSON
+            const contentType = response.headers.get("content-type");
+            let result;
+            
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                result = await response.json();
+            } else {
+                // Handle HTML error responses from Vercel
+                const text = await response.text();
+                console.error('Playbook API Non-JSON response:', text.substring(0, 200));
+                
+                throw new Error(`Server configuration error: Expected JSON but received HTML.\n\nThis typically indicates:\n1. Missing API endpoint\n2. Vercel routing issue\n3. Server startup problem\n\nResponse preview: "${text.substring(0, 50)}..."`);
+            }
             
             if (response.ok && result.success) {
                 showMessage(result.message, 'success');

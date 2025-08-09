@@ -242,7 +242,37 @@ app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'healthy', 
         timestamp: new Date().toISOString(),
-        version: '2.0.0-viral-enhanced'
+        version: '2.0.0-viral-enhanced',
+        env: process.env.NODE_ENV || 'development',
+        vercel: process.env.VERCEL || false
+    });
+});
+
+// Debug endpoint for troubleshooting JSON issues
+app.get('/api/debug', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Debug endpoint working - JSON response confirmed',
+        endpoints: [
+            '/api/health',
+            '/api/debug', 
+            '/api/generate-trends',
+            '/api/generate-script',
+            '/api/generate-playbook',
+            '/api/score-idea'
+        ],
+        request_info: {
+            headers: req.headers,
+            url: req.url,
+            method: req.method,
+            user_agent: req.headers['user-agent']
+        },
+        server_info: {
+            node_version: process.version,
+            platform: process.platform,
+            env: process.env.NODE_ENV || 'development'
+        },
+        timestamp: new Date().toISOString()
     });
 });
 
