@@ -62,9 +62,12 @@ app.post('/api/generate-playbook', async (req, res) => {
         console.log('PDF generated successfully');
 
         // Send email with attachments
-        await sendEmail(email, name, pdfBuffer, csvData);
-
-        console.log('Email sent successfully');
+        try {
+            await sendEmail(email, name, pdfBuffer, csvData);
+            console.log('Email sent successfully');
+        } catch (emailError) {
+            console.error('Email sending failed, but continuing workflow:', emailError.message);
+        }
 
         // Save to CRM
         await saveToCRM({

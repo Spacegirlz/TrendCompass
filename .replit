@@ -16,16 +16,19 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Luxury Content Generator"
+args = "TrendCompass Generator"
 
 [[workflows.workflow]]
-name = "Luxury Content Generator"
+name = "TrendCompass Generator"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm install && node server.js"
+args = "export GMAIL_PASS='Isabella!2102' && npm install && node server.js"
 waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 5000
