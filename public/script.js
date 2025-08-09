@@ -143,8 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage(result.details || 'Failed to generate trending ideas', 'error');
             }
         } catch (error) {
-            console.error('Error:', error);
-            showMessage('Network error. Please check your connection and try again.', 'error');
+            console.error('Error details:', error);
+            const errorMessage = error.message || 'Network error. Please check your connection and try again.';
+            showMessage(errorMessage, 'error');
         } finally {
             // Reset loading state
             if (timerInterval) {

@@ -1,9 +1,26 @@
 const OpenAI = require('openai');
+const PerplexityService = require('./perplexity');
+
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const perplexityService = new PerplexityService();
 
 async function generateTrendingIdeas(topic, userLanguage = 'en') {
     try {
         console.log(`Generating ultra-specific viral content ideas for: ${topic}`);
+        
+        // Try Perplexity first (more current and specific content)
+        if (process.env.PERPLEXITY_API_KEY) {
+            try {
+                console.log('Using Perplexity API for trending content generation...');
+                const perplexityResult = await perplexityService.generateTrendingIdeas(topic);
+                if (perplexityResult.success) {
+                    console.log('Successfully generated content with Perplexity API');
+                    return perplexityResult;
+                }
+            } catch (perplexityError) {
+                console.log('Perplexity API failed, falling back to OpenAI:', perplexityError.message);
+            }
+        }
         
         const prompt = `YOU MUST CREATE SPECIFIC VIRAL VIDEO TITLES, NOT CATEGORIES.
 
