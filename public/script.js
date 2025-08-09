@@ -183,8 +183,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.unique_insights) {
             html += `<div class="trends-section">
                 <h4>💡 Unique Content Creation Insights</h4>
-                <div class="unique-insights">${convertMarkdownToHTML(data.unique_insights)}</div>
-            </div>`;
+                <div class="unique-insights">`;
+            
+            // Split insights into numbered list format
+            const insights = data.unique_insights.split(/\d+\.\s+/).filter(insight => insight.trim());
+            insights.forEach((insight, index) => {
+                if (insight.trim()) {
+                    html += `<div class="insight-item">
+                        <span class="insight-number">${index + 1}</span>
+                        <p>${insight.trim()}</p>
+                    </div>`;
+                }
+            });
+            
+            html += `</div></div>`;
         }
         
         if (data.viral_hashtags) {

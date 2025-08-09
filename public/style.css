@@ -127,6 +127,75 @@
     border: 1px solid var(--stone);
 }
 
+/* Unique Insights Styling */
+.unique-insights {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--stone);
+}
+
+.insight-item {
+    display: flex;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: var(--cream);
+    border-radius: 8px;
+    border-left: 4px solid var(--gold);
+}
+
+.insight-number {
+    background: var(--gold);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.insight-item p {
+    margin: 0;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+/* Platform Heatmap Improvements */
+.trends-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--stone);
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.trends-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    max-width: 300px;
+}
+
+/* Viral Hashtags Styling */
+.viral-hashtags {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--stone);
+}
+
+.viral-hashtags p {
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--cream);
+    border-radius: 6px;
+    border-left: 3px solid var(--gold);
+}
+
 .markdown-content {
     background: white;
     padding: 20px;

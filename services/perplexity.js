@@ -15,7 +15,7 @@ class PerplexityService {
 Format your response as JSON with this exact structure:
 {
   "trending_ideas_table": "| # | **Specific Video Title** | **Viral Hook Strategy** | **Viral Hashtags** |\\n|---|-------------------------|-------------------------|---------------------|\\n| 1 | \"I tried [specific action] for [timeframe]—here's what happened\" | Experiment reveal | #hashtag1 #hashtag2 |\\n...",
-  "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |\\n|-------------|--------|---------|-----------|\\n| Title 1 | 🔥 | 💼 | 🔥 |\\n...",
+  "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |\\n|-------------|--------|---------|-----------|\\n| Title 1 | High | Medium | High |\\n...",
   "unique_insights": "1. Insight about current trends\\n2. Insight about viral hooks\\n3. Insight about platform strategies",
   "viral_hashtags": {
     "TikTok": "#trend1 #trend2 #trend3",
@@ -29,7 +29,9 @@ Make video titles extremely specific like:
 - "POV: You're [specific role] and [specific situation happens]"
 - "I tried [specific method] for [timeframe] and the results shocked everyone"
 
-Use bold formatting with ** around key words. Focus on current viral formats and trending hooks.`;
+Use bold formatting with ** around key words. Focus on current viral formats and trending hooks.
+
+For platform_heatmap, use "High", "Medium", "Low" instead of emojis to show performance potential on each platform.`;
 
         try {
             const response = await this.makeRequest({
