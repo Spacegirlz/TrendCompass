@@ -104,22 +104,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Set loading state
         trendsBtn.disabled = true;
-        btnText.style.display = 'none';
-        btnLoading.style.display = 'flex';
+        if (btnText) btnText.style.display = 'none';
+        if (btnLoading) btnLoading.style.display = 'flex';
         
         // Start progress animation
-        progressBar.style.animation = 'progress 60s linear';
+        if (progressBar) {
+            progressBar.style.animation = 'progress 60s linear';
+        }
         
         // Update timer countdown
         let timeLeft = 60;
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft > 0) {
-                loadingTimer.textContent = `Estimated: ${timeLeft}s`;
-            } else {
-                loadingTimer.textContent = 'Almost ready...';
-            }
-        }, 1000);
+        let timerInterval;
+        if (loadingTimer) {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    loadingTimer.textContent = `Estimated: ${timeLeft}s`;
+                } else {
+                    loadingTimer.textContent = 'Almost ready...';
+                }
+            }, 1000);
+        }
         
         try {
             const response = await fetch('/api/generate-trends', {
@@ -142,12 +147,16 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('Network error. Please check your connection and try again.', 'error');
         } finally {
             // Reset loading state
-            clearInterval(timerInterval);
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
             trendsBtn.disabled = false;
-            btnText.style.display = 'inline';
-            btnLoading.style.display = 'none';
-            progressBar.style.animation = 'none';
-            progressBar.style.width = '0%';
+            if (btnText) btnText.style.display = 'inline';
+            if (btnLoading) btnLoading.style.display = 'none';
+            if (progressBar) {
+                progressBar.style.animation = 'none';
+                progressBar.style.width = '0%';
+            }
         }
     });
 
