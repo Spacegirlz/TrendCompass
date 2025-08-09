@@ -48,6 +48,8 @@ Preferred communication style: Simple, everyday language.
 ## AI and Content Generation
 - **OpenAI API**: GPT-5 model (with GPT-4o fallback) for content strategy generation
 - **GPT-5 Integration**: Successfully implemented GPT-5 with automatic fallback to GPT-4o if unavailable
+- **Trending Ideas Feature**: Interactive research tool for generating viral content concepts with platform performance analysis
+- **Content Specificity Challenge**: AI models tend toward generic categories rather than highly specific viral content due to safety constraints
 - **Handlebars**: Template engine for PDF generation
 - **Puppeteer**: Headless browser for PDF rendering and document generation
 
