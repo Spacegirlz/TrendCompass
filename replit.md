@@ -1,6 +1,6 @@
 # Overview
 
-A luxury viral content strategy generator that creates dual-track (public and private) social media playbooks for content creators. The system generates personalized content strategies with AI-powered recommendations using OpenAI's GPT-4o model, delivers them as luxury-branded PDF playbooks with CSV exports, and includes automated email delivery and CRM integration.
+TrendCompass Viral Strategy Generator - A luxury viral content strategy generator that creates dual-track (public and private) social media playbooks for content creators. The system generates personalized content strategies with AI-powered recommendations using OpenAI's GPT-4o model, delivers them as luxury-branded PDF playbooks with CSV exports, and includes automated email delivery and CRM integration.
 
 # User Preferences
 

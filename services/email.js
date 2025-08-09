@@ -4,9 +4,12 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
     try {
         console.log(`Sending email to ${recipientEmail}...`);
         
+        // Use configured email address
+        const senderEmail = 'admin@virtualsatchel.com';
+        
         // Check if email credentials are configured
-        if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-            console.log('Email credentials not configured, skipping email send');
+        if (!process.env.GMAIL_PASS) {
+            console.log('Email password not configured, skipping email send');
             console.log('PDF and CSV generated successfully - would be attached to email');
             return { messageId: 'test-message-id', status: 'skipped - no credentials' };
         }
@@ -15,20 +18,20 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.GMAIL_USER,
+                user: senderEmail,
                 pass: process.env.GMAIL_PASS
             }
         });
         
         const mailOptions = {
-            from: `"Luxury Viral Strategy" <${process.env.GMAIL_USER || 'noreply@example.com'}>`,
+            from: `"TrendCompass Viral Strategy" <${senderEmail}>`,
             to: recipientEmail,
-            subject: `🏆 Your Luxury Viral Strategy Playbook is Ready, ${recipientName}!`,
+            subject: `🏆 Your TrendCompass Viral Strategy Playbook is Ready, ${recipientName}!`,
             html: `
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f5f0;">
                     <!-- Header -->
                     <div style="background: linear-gradient(135deg, #0f0f10, #1b1b1d); color: #d4af37; padding: 40px 30px; text-align: center; border-radius: 0 0 14px 14px;">
-                        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px;">Luxury Viral Strategy</h1>
+                        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px;">TrendCompass Viral Strategy</h1>
                         <p style="margin: 8px 0 0; color: #f1e8cf; font-size: 16px;">Your Premium Content Playbook</p>
                     </div>
                     
@@ -37,7 +40,7 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
                         <h2 style="color: #c9a33a; margin: 0 0 20px; font-size: 24px;">Hello ${recipientName},</h2>
                         
                         <p style="color: #333; line-height: 1.6; margin-bottom: 20px;">
-                            Your personalized <strong>Luxury Viral Strategy Playbook</strong> has been generated and is ready for implementation!
+                            Your personalized <strong>TrendCompass Viral Strategy Playbook</strong> has been generated and is ready for implementation!
                         </p>
                         
                         <div style="background: #f8f5f0; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #d4af37;">
@@ -72,25 +75,25 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
                             <p style="color: #999; font-size: 14px; margin: 0;">
                                 Best regards,<br>
-                                <strong style="color: #c9a33a;">The Luxury Viral Strategy Team</strong>
+                                <strong style="color: #c9a33a;">The TrendCompass Viral Strategy Team</strong>
                             </p>
                         </div>
                     </div>
                     
                     <!-- Footer -->
                     <div style="background: #f0f0f0; padding: 20px 30px; text-align: center; color: #666; font-size: 12px; border-radius: 14px 14px 0 0;">
-                        <p style="margin: 0;">© 2025 Luxury Viral Strategy Generator. Premium content solutions for elite creators.</p>
+                        <p style="margin: 0;">© 2025 TrendCompass Viral Strategy Generator. Premium content solutions for elite creators.</p>
                     </div>
                 </div>
             `,
             attachments: [
                 {
-                    filename: `${recipientName}_Luxury_Viral_Strategy_Playbook.pdf`,
+                    filename: `${recipientName}_TrendCompass_Viral_Strategy_Playbook.pdf`,
                     content: pdfBuffer,
                     contentType: 'application/pdf'
                 },
                 {
-                    filename: `${recipientName}_Content_Hooks_and_Hashtags.csv`,
+                    filename: `${recipientName}_TrendCompass_Content_Hooks_and_Hashtags.csv`,
                     content: csvData,
                     contentType: 'text/csv'
                 }

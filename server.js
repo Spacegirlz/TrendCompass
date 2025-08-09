@@ -83,7 +83,7 @@ app.post('/api/generate-playbook', async (req, res) => {
 
         res.json({ 
             success: true, 
-            message: 'Your Luxury Viral Strategy Playbook has been generated and sent to your email!',
+            message: 'Your TrendCompass Viral Strategy Playbook has been generated and sent to your email!',
             details: 'Please check your inbox (and spam folder) for your personalized playbook and CSV file.'
         });
 
@@ -110,6 +110,6 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Luxury Trend Finder server running on port ${PORT}`);
+    console.log(`TrendCompass Viral Strategy Generator server running on port ${PORT}`);
     console.log(`Frontend available at: http://localhost:${PORT}`);
 });
