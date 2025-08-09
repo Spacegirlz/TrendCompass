@@ -1,9 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('playbookForm');
+    const playbookForm = document.getElementById('playbookForm');
+    const trendsForm = document.getElementById('trendsForm');
     const submitBtn = document.getElementById('submitBtn');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoading = submitBtn.querySelector('.btn-loading');
     const resultMessage = document.getElementById('resultMessage');
+    
+    // Mode switching
+    const trendsMode = document.getElementById('trendsMode');
+    const playbookMode = document.getElementById('playbookMode');
+    
+    trendsMode.addEventListener('click', () => {
+        trendsMode.classList.add('active');
+        playbookMode.classList.remove('active');
+        trendsForm.style.display = 'block';
+        playbookForm.style.display = 'none';
+        resultMessage.style.display = 'none';
+    });
+    
+    playbookMode.addEventListener('click', () => {
+        playbookMode.classList.add('active');
+        trendsMode.classList.remove('active');
+        playbookForm.style.display = 'block';
+        trendsForm.style.display = 'none';
+        resultMessage.style.display = 'none';
+    });
 
     // Form validation
     function validateForm(formData) {
@@ -67,21 +86,140 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Set loading state
-    function setLoading(loading) {
-        submitBtn.disabled = loading;
-        btnText.style.display = loading ? 'none' : 'inline';
-        btnLoading.style.display = loading ? 'flex' : 'none';
+    // Handle trending ideas form
+    trendsForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        if (loading) {
-            form.classList.add('loading');
-        } else {
-            form.classList.remove('loading');
+        const topic = document.getElementById('topic').value.trim();
+        if (!topic) {
+            showMessage('Please enter a topic', 'error');
+            return;
+        }
+
+        const trendsBtn = trendsForm.querySelector('.luxury-btn');
+        const btnText = trendsBtn.querySelector('.btn-text');
+        
+        // Set loading state
+        trendsBtn.disabled = true;
+        btnText.textContent = '🔍 Researching Trends...';
+        
+        try {
+            const response = await fetch('/api/generate-trends', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ topic })
+            });
+
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                displayTrendingResults(result);
+            } else {
+                showMessage(result.details || 'Failed to generate trending ideas', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Network error. Please check your connection and try again.', 'error');
+        } finally {
+            trendsBtn.disabled = false;
+            btnText.textContent = '🔥 Get Trending Ideas';
+        }
+    });
+
+    // Display trending results
+    function displayTrendingResults(result) {
+        const data = result.data;
+        let html = `<div class="trends-results">
+            <h3>🔥 Trending Ideas for "${result.topic}"</h3>
+            <div class="trends-content">
+                <div class="trends-section">
+                    <h4>💡 Latest Trending Ideas</h4>
+                    ${convertMarkdownTable(data.trending_ideas_table)}
+                </div>`;
+        
+        if (data.platform_heatmap) {
+            html += `<div class="trends-section">
+                <h4>📊 Platform Performance Heat Map</h4>
+                ${convertMarkdownTable(data.platform_heatmap)}
+            </div>`;
+        }
+        
+        if (data.top_3_fastest_growing) {
+            html += `<div class="trends-section">
+                <h4>🚀 Top 3 Fastest Growing</h4>
+                <div class="fastest-growing">${data.top_3_fastest_growing}</div>
+            </div>`;
+        }
+        
+        if (data.hook_lines) {
+            html += `<div class="trends-section">
+                <h4>🎯 Viral Hook Lines & Formats</h4>
+                <div class="hook-lines">${data.hook_lines}</div>
+            </div>`;
+        }
+        
+        html += `</div></div>`;
+        
+        resultMessage.innerHTML = html;
+        resultMessage.className = 'result-message success trends-display';
+        resultMessage.style.display = 'block';
+        resultMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Convert markdown table to HTML
+    function convertMarkdownTable(markdown) {
+        if (!markdown) return '';
+        
+        const lines = markdown.split('\n').filter(line => line.trim());
+        if (lines.length < 2) return `<div class="markdown-content">${markdown}</div>`;
+        
+        let html = '<table class="trends-table"><thead><tr>';
+        
+        // Header row
+        const headers = lines[0].split('|').map(h => h.trim()).filter(h => h);
+        headers.forEach(header => {
+            html += `<th>${header}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+        
+        // Data rows (skip header and separator)
+        for (let i = 2; i < lines.length; i++) {
+            const cells = lines[i].split('|').map(c => c.trim()).filter(c => c);
+            if (cells.length > 0) {
+                html += '<tr>';
+                cells.forEach(cell => {
+                    html += `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            }
+        }
+        
+        html += '</tbody></table>';
+        return html;
+    }
+
+    // Set loading state for playbook form
+    function setLoading(loading) {
+        if (submitBtn) {
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            submitBtn.disabled = loading;
+            if (btnText) btnText.style.display = loading ? 'none' : 'inline';
+            if (btnLoading) btnLoading.style.display = loading ? 'flex' : 'none';
+        }
+        
+        if (loading && playbookForm) {
+            playbookForm.classList.add('loading');
+        } else if (playbookForm) {
+            playbookForm.classList.remove('loading');
         }
     }
 
-    // Handle form submission
-    form.addEventListener('submit', async function(e) {
+    // Handle playbook form submission
+    if (playbookForm) {
+        playbookForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // Hide previous messages
@@ -124,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Reset form after successful submission
                 setTimeout(() => {
-                    form.reset();
+                    playbookForm.reset();
                     // Uncheck all platform checkboxes
                     document.querySelectorAll('input[name="platforms"]').forEach(cb => {
                         cb.checked = false;
@@ -172,26 +310,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add loading animation to the container
-    const formContainer = document.querySelector('.form-container');
-    
-    // Intersection Observer for entrance animation
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        },
-        { threshold: 0.1 }
-    );
-    
-    // Initial state for animation
-    formContainer.style.opacity = '0';
-    formContainer.style.transform = 'translateY(20px)';
-    formContainer.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    
-    observer.observe(formContainer);
+    }
 });

@@ -15,6 +15,134 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Mode Selector Styles */
+.mode-selector {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+.mode-btn {
+    padding: 12px 24px;
+    border: 2px solid var(--gold-soft);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--gold-soft);
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.mode-btn:hover {
+    background: var(--gold-soft);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.mode-btn.active {
+    background: var(--gold);
+    color: white;
+    border-color: var(--gold);
+}
+
+/* Trending Results Styles */
+.trends-results {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius);
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+}
+
+.trends-results h3 {
+    color: var(--gold-soft);
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.trends-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: var(--ivory);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--gold);
+}
+
+.trends-section h4 {
+    color: var(--ink);
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.trends-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+}
+
+.trends-table th {
+    background: var(--gold);
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.trends-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--stone);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.trends-table tr:last-child td {
+    border-bottom: none;
+}
+
+.trends-table tr:hover {
+    background: var(--cream);
+}
+
+.fastest-growing, .hook-lines {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    white-space: pre-wrap;
+    line-height: 1.6;
+    border: 1px solid var(--stone);
+}
+
+.markdown-content {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    white-space: pre-wrap;
+    line-height: 1.6;
+    border: 1px solid var(--stone);
+}
+
+.trends-display {
+    max-width: none !important;
+}
+
+/* Form Styles for Trending Ideas */
+.luxury-form small {
+    display: block;
+    color: var(--gold-soft);
+    font-size: 12px;
+    margin-top: 5px;
+    font-style: italic;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

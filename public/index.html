@@ -23,11 +23,32 @@
         <main class="main-content">
             <div class="form-container">
                 <div class="form-header">
-                    <h2>Generate Your Million-Dollar Strategy</h2>
-                    <p>Complete the form below to receive your personalized luxury viral content playbook with both public and private member strategies.</p>
+                    <h2>Generate Your Viral Strategy</h2>
+                    <p>Choose your approach: Get trending ideas for any topic, or create a complete strategy playbook with both public and private member strategies.</p>
+                    
+                    <div class="mode-selector">
+                        <button type="button" id="trendsMode" class="mode-btn active">🔥 Trending Ideas</button>
+                        <button type="button" id="playbookMode" class="mode-btn">📋 Complete Playbook</button>
+                    </div>
                 </div>
 
-                <form id="playbookForm" class="luxury-form">
+                <!-- Trending Ideas Form -->
+                <form id="trendsForm" class="luxury-form" style="display: block;">
+                    <div class="form-group">
+                        <label for="topic">What topic do you need trending ideas for? *</label>
+                        <input type="text" id="topic" name="topic" placeholder="e.g., AI Tools, Luxury Fashion, Health & Wellness" required>
+                        <small>Enter any topic and get 10+ mind-blowing trending ideas currently gaining traction</small>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="luxury-btn">
+                            <span class="btn-text">🔥 Get Trending Ideas</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Complete Playbook Form -->
+                <form id="playbookForm" class="luxury-form" style="display: none;">
                     <div class="form-group">
                         <label for="name">Full Name *</label>
                         <input type="text" id="name" name="name" required>

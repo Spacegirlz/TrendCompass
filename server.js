@@ -6,6 +6,7 @@ const { generateContent } = require('./services/openai');
 const { generatePDF } = require('./services/pdf');
 const { sendEmail } = require('./services/email');
 const { saveToCRM } = require('./services/sheets');
+const { generateTrendingIdeas } = require('./services/trending');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -94,6 +95,37 @@ app.post('/api/generate-playbook', async (req, res) => {
         console.error('Error generating playbook:', error);
         res.status(500).json({ 
             error: 'Failed to generate playbook',
+            details: error.message || 'An unexpected error occurred. Please try again.'
+        });
+    }
+});
+
+app.post('/api/generate-trends', async (req, res) => {
+    try {
+        const { topic } = req.body;
+        
+        if (!topic || !topic.trim()) {
+            return res.status(400).json({ 
+                error: 'Topic is required',
+                details: 'Please provide a topic to generate trending ideas for.'
+            });
+        }
+
+        console.log(`Generating trending ideas for topic: ${topic}`);
+
+        const trendingData = await generateTrendingIdeas(topic.trim());
+
+        res.json({
+            success: true,
+            topic: topic.trim(),
+            data: trendingData,
+            generated_at: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('Error generating trending ideas:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate trending ideas',
             details: error.message || 'An unexpected error occurred. Please try again.'
         });
     }
