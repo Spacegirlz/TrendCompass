@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="trends-content">
                 <div class="trends-section">
                     <h4>💡 Latest Trending Ideas</h4>
-                    ${convertMarkdownTable(data.trending_ideas_table)}
+                    ${convertMarkdownTableWithScriptButtons(data.trending_ideas_table)}
                 </div>`;
         
         if (data.platform_heatmap) {
@@ -225,6 +225,91 @@ document.addEventListener('DOMContentLoaded', function() {
         resultMessage.className = 'result-message success trends-display';
         resultMessage.style.display = 'block';
         resultMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Show script generator section
+        document.querySelector('.script-generator-section').style.display = 'block';
+    }
+
+    // Generate script for viral idea
+    window.generateScript = async function(button) {
+        const row = button.closest('tr');
+        const viralTitle = row.cells[1].textContent.trim();
+        
+        button.disabled = true;
+        button.textContent = '⏳ Generating...';
+        
+        try {
+            const response = await fetch('/api/generate-script', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    viralIdea: viralTitle,
+                    platform: 'TikTok' 
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                displayScriptResults(result);
+            } else {
+                showMessage(result.details || 'Failed to generate script', 'error');
+            }
+        } catch (error) {
+            console.error('Script generation error:', error);
+            showMessage('Network error while generating script', 'error');
+        } finally {
+            button.disabled = false;
+            button.textContent = '📝 Get Script';
+        }
+    }
+
+    // Display script results
+    function displayScriptResults(result) {
+        const script = result.script;
+        const html = `
+            <div class="script-display">
+                <h3>🎬 Complete Video Script</h3>
+                <div class="script-title">"${result.viral_idea}"</div>
+                
+                <div class="script-section">
+                    <h4>🎯 Hook (First 3-5 seconds)</h4>
+                    <div class="script-content hook">${script.hook}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h4>📝 Complete Script</h4>
+                    <div class="script-content main-script">${script.script}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h4>📞 Call-to-Action</h4>
+                    <div class="script-content cta">${script.cta}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h4>🖼️ Thumbnail Text</h4>
+                    <div class="script-content thumbnail">${script.thumbnail_text}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h4>🏷️ Hashtags</h4>
+                    <div class="script-hashtags">${script.hashtags.join(' ')}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h4>🔥 Engagement Tactics</h4>
+                    <ul class="engagement-list">
+                        ${script.engagement_tactics.map(tactic => `<li>${tactic}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('scriptResults').innerHTML = html;
+        document.getElementById('scriptResults').scrollIntoView({ behavior: 'smooth' });
     }
 
     // Convert markdown formatting to HTML
@@ -243,6 +328,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return text;
     }
     
+    // Convert markdown table to HTML with script generation buttons
+    function convertMarkdownTableWithScriptButtons(markdown) {
+        const html = convertMarkdownTable(markdown);
+        // Add script generation buttons to each row
+        return html.replace(/<tr>/g, '<tr class="idea-row">').replace(/<\/tr>/g, '<td><button class="script-btn" onclick="generateScript(this)">📝 Get Script</button></td></tr>');
+    }
+
     // Convert markdown table to HTML
     function convertMarkdownTable(markdown) {
         if (!markdown) return '';

@@ -7,6 +7,9 @@ const { generatePDF } = require('./services/pdf');
 const { sendEmail } = require('./services/email');
 const { saveToCRM } = require('./services/sheets');
 const { generateTrendingIdeas } = require('./services/trending');
+const ScriptGeneratorService = require('./services/scriptGenerator');
+
+const scriptGenerator = new ScriptGeneratorService();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -96,6 +99,37 @@ app.post('/api/generate-playbook', async (req, res) => {
         res.status(500).json({ 
             error: 'Failed to generate playbook',
             details: error.message || 'An unexpected error occurred. Please try again.'
+        });
+    }
+});
+
+// Generate video script endpoint  
+app.post('/api/generate-script', async (req, res) => {
+    try {
+        const { viralIdea, platform = 'TikTok' } = req.body;
+        
+        if (!viralIdea) {
+            return res.status(400).json({ 
+                success: false, 
+                details: 'Viral idea is required' 
+            });
+        }
+
+        const result = await scriptGenerator.generateVideoScript(viralIdea, platform);
+        
+        res.json({
+            success: true,
+            viral_idea: viralIdea,
+            platform: platform,
+            script: result.script,
+            generated_at: new Date().toISOString()
+        });
+        
+    } catch (error) {
+        console.error('Script generation error:', error);
+        res.status(500).json({ 
+            success: false, 
+            details: error.message || 'Failed to generate script'
         });
     }
 });

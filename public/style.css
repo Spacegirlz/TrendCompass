@@ -197,6 +197,134 @@
     border-left: 3px solid var(--gold);
 }
 
+/* Script Generation Styling */
+.script-generator-section {
+    margin: 40px 0;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.script-generator-section h3 {
+    color: var(--gold-soft);
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.script-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.script-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.script-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.script-display {
+    background: white;
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin: 20px 0;
+    text-align: left;
+}
+
+.script-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold-soft);
+    margin-bottom: 30px;
+    padding: 15px;
+    background: var(--cream);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--gold);
+}
+
+.script-section {
+    margin: 25px 0;
+    padding: 20px;
+    background: var(--ivory);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--gold);
+}
+
+.script-section h4 {
+    color: var(--ink);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.script-content {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--stone);
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
+.script-content.hook {
+    border-left: 4px solid #e74c3c;
+    background: #fef9f9;
+}
+
+.script-content.main-script {
+    border-left: 4px solid #3498db;
+    background: #f8fbff;
+}
+
+.script-content.cta {
+    border-left: 4px solid #f39c12;
+    background: #fffdf7;
+}
+
+.script-hashtags {
+    background: var(--cream);
+    padding: 15px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--gold-soft);
+}
+
+.engagement-list {
+    list-style: none;
+    padding: 0;
+}
+
+.engagement-list li {
+    padding: 8px 15px;
+    margin: 8px 0;
+    background: white;
+    border-radius: 6px;
+    border-left: 3px solid var(--gold);
+}
+
+/* Table improvements for script buttons */
+.trends-table th:last-child,
+.trends-table td:last-child {
+    width: 120px;
+    text-align: center;
+}
+
 .markdown-content {
     background: white;
     padding: 20px;
