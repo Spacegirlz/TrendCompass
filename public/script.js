@@ -149,14 +149,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.top_3_fastest_growing) {
             html += `<div class="trends-section">
                 <h4>🚀 Top 3 Fastest Growing</h4>
-                <div class="fastest-growing">${data.top_3_fastest_growing}</div>
+                <div class="fastest-growing">${convertMarkdownToHTML(data.top_3_fastest_growing)}</div>
             </div>`;
         }
         
         if (data.hook_lines) {
             html += `<div class="trends-section">
                 <h4>🎯 Viral Hook Lines & Formats</h4>
-                <div class="hook-lines">${data.hook_lines}</div>
+                <div class="hook-lines">${convertMarkdownToHTML(data.hook_lines)}</div>
             </div>`;
         }
         
@@ -168,19 +168,35 @@ document.addEventListener('DOMContentLoaded', function() {
         resultMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
+    // Convert markdown formatting to HTML
+    function convertMarkdownToHTML(text) {
+        if (!text) return '';
+        
+        // Convert **bold** to <strong>bold</strong>
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Convert *italic* to <em>italic</em>
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+        // Convert line breaks
+        text = text.replace(/\n/g, '<br>');
+        
+        return text;
+    }
+    
     // Convert markdown table to HTML
     function convertMarkdownTable(markdown) {
         if (!markdown) return '';
         
         const lines = markdown.split('\n').filter(line => line.trim());
-        if (lines.length < 2) return `<div class="markdown-content">${markdown}</div>`;
+        if (lines.length < 2) return `<div class="markdown-content">${convertMarkdownToHTML(markdown)}</div>`;
         
         let html = '<table class="trends-table"><thead><tr>';
         
         // Header row
         const headers = lines[0].split('|').map(h => h.trim()).filter(h => h);
         headers.forEach(header => {
-            html += `<th>${header}</th>`;
+            html += `<th>${convertMarkdownToHTML(header)}</th>`;
         });
         html += '</tr></thead><tbody>';
         
@@ -190,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cells.length > 0) {
                 html += '<tr>';
                 cells.forEach(cell => {
-                    html += `<td>${cell}</td>`;
+                    html += `<td>${convertMarkdownToHTML(cell)}</td>`;
                 });
                 html += '</tr>';
             }
