@@ -5,7 +5,7 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
         console.log(`Sending email to ${recipientEmail}...`);
         
         // Use configured email address
-        const senderEmail = 'admin@virtualsatchel.com';
+        const senderEmail = 'piet@virtualsatchel.com';
         
         // Check if email credentials are configured
         if (!process.env.GMAIL_PASS) {
