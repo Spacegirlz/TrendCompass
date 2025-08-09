@@ -57,7 +57,17 @@ For "${viralIdea}" - write a hook that sounds like someone's real internal monol
                 temperature: 0.8
             });
 
-            const scriptContent = JSON.parse(response.choices[0].message.content);
+            let rawContent = response.choices[0].message.content;
+            
+            // Clean up response - remove markdown code blocks if present
+            if (rawContent.includes('```json')) {
+                rawContent = rawContent.replace(/```json\s*/, '').replace(/```\s*$/, '');
+            }
+            if (rawContent.includes('```')) {
+                rawContent = rawContent.replace(/```.*?\n/, '').replace(/```\s*$/, '');
+            }
+            
+            const scriptContent = JSON.parse(rawContent.trim());
             
             return {
                 success: true,
