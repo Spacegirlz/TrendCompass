@@ -3,64 +3,56 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 async function generateTrendingIdeas(topic, userLanguage = 'en') {
     try {
-        console.log(`Generating trending ideas for topic: ${topic}`);
+        console.log(`Generating specific viral content ideas for: ${topic}`);
         
-        const prompt = `You will write in ${userLanguage === 'en' ? 'English' : userLanguage}.
+        const prompt = `Act as a viral content creator. I need 12 SPECIFIC video titles that I can film immediately about: "${topic}"
 
-You act as an adept web researcher, surfacing a wealth of promising ideas and information relevant to the user's inquiry about: "${topic}"
+RULES:
+- Each must be a complete video title ready for TikTok/YouTube
+- Must include specific numbers, time frames, or shocking claims
+- Use viral formats like "I tried X for Y days", "Doctor reacts to", "POV:", "X things they don't tell you"
+- NO general topics - only specific, filmable content ideas
 
-You are programmed to consult a diverse array of sources to ensure thoroughness and provide contextually rich, concise summaries.
+Examples of what I want:
+"I took saw palmetto for 30 days at age 28 - here's what happened to my prostate"
+"Urologist reacts to viral prostate myths young men believe"
+"POV: You're 25 and your doctor says your prostate is already enlarged"
+"5 signs your prostate is failing at 30 (that doctors miss)"
 
-Output Rules:
-You research the web for mind-blowing, currently high-trending ideas regarding the topic "${topic}".
+Create 12 titles like these for "${topic}":
 
-You will provide a minimum of 10 ideas in a beautiful table format.
-
-Every single idea should be a standalone idea — independent of all others.
-
-You will not explain how to implement the idea — only give the idea itself.
-
-You always use bold text in effective places.
-
-Your interaction is short and simple.
-
-You use less text and more bullet points.
-
-You maintain a friendly, helpful demeanor.
-
-Formatting Requirements:
-- Idea list → Always in a formatted table with columns: # | Trend Idea | Description
-- Highlight → Use bold for emphasis in titles or key words
-- Language → Match the user's language exactly
-
-Special Notes:
-This GPT is called Viral Trends
-
-You do not provide step-by-step instructions unless explicitly asked.
-You aim for clear, engaging brevity — "short and punchy" is the style.
-
-Please provide exactly this JSON format:
+Response format (JSON):
 {
-  "trending_ideas_table": "markdown table with minimum 10 trending ideas",
-  "platform_heatmap": "markdown table showing platform performance for each trend",
-  "top_3_fastest_growing": "detailed breakdown of the top 3 fastest growing trends",
-  "hook_lines": "successful hook lines and formats for the top trends"
+  "trending_ideas_table": "| # | Video Title | Content Format | Viral Score |",
+  "platform_heatmap": "| Title | TikTok | YouTube | Instagram |", 
+  "top_3_fastest_growing": "Top 3 titles with filming tips",
+  "hook_lines": "Opening lines for top 3 videos"
 }`;
 
         const response = await openai.chat.completions.create({
-            model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [{ role: "user", content: prompt }],
+            model: "gpt-4o",
+            messages: [
+                {
+                    role: "system", 
+                    content: "You are a viral content strategist. You create specific, actionable video titles that can go viral immediately. Never give general categories - only specific video titles someone can film today."
+                },
+                {
+                    role: "user", 
+                    content: prompt
+                }
+            ],
             response_format: { type: "json_object" },
-            max_completion_tokens: 4000
+            max_completion_tokens: 3000,
+            temperature: 0.9
         });
 
         const result = JSON.parse(response.choices[0].message.content);
-        console.log('Trending ideas generated successfully');
+        console.log('Specific viral content ideas generated successfully');
         return result;
 
     } catch (error) {
-        console.error('Error generating trending ideas:', error);
-        throw new Error('Failed to generate trending ideas: ' + error.message);
+        console.error('Error generating viral content ideas:', error);
+        throw new Error('Failed to generate viral content ideas: ' + error.message);
     }
 }
 
