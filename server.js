@@ -8,6 +8,7 @@ const { sendEmail } = require('./services/email');
 const { saveToCRM } = require('./services/sheets');
 const { generateTrendingIdeas } = require('./services/trending');
 const ScriptGeneratorService = require('./services/scriptGenerator');
+const { calculateViralScore } = require('./utils/viralScore');
 
 const scriptGenerator = new ScriptGeneratorService();
 
@@ -165,8 +166,42 @@ app.post('/api/generate-trends', async (req, res) => {
     }
 });
 
+// Quick viral score endpoint for testing
+app.post('/api/score-idea', (req, res) => {
+    try {
+        const { idea } = req.body;
+        
+        if (!idea || !idea.trim()) {
+            return res.status(400).json({ 
+                error: 'Idea is required',
+                details: 'Please provide an idea to score.'
+            });
+        }
+
+        const score = calculateViralScore(idea.trim());
+        
+        res.json({
+            success: true,
+            idea: idea.trim(),
+            ...score,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('Error scoring idea:', error);
+        res.status(500).json({ 
+            error: 'Failed to score idea',
+            details: error.message || 'An unexpected error occurred.'
+        });
+    }
+});
+
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+    res.json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        version: '2.0.0-viral-enhanced'
+    });
 });
 
 // Error handling middleware

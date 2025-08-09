@@ -67,6 +67,86 @@ document.addEventListener('DOMContentLoaded', function() {
         return Array.from(checkboxes).map(cb => cb.value).join(', ');
     }
 
+    // Copy to clipboard functionality
+    function addCopyButton(element, text, label = 'Copy') {
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = `📋 ${label}`;
+        copyBtn.className = 'copy-btn';
+        copyBtn.style.cssText = `
+            margin-left: 8px;
+            padding: 4px 8px;
+            background: var(--gold);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        `;
+        
+        copyBtn.addEventListener('mouseover', () => {
+            copyBtn.style.background = 'var(--gold-soft)';
+        });
+        
+        copyBtn.addEventListener('mouseout', () => {
+            copyBtn.style.background = 'var(--gold)';
+        });
+        
+        copyBtn.onclick = async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = 'var(--gold)';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                copyBtn.textContent = '❌ Failed';
+                setTimeout(() => {
+                    copyBtn.textContent = `📋 ${label}`;
+                }, 2000);
+            }
+        };
+        
+        element.appendChild(copyBtn);
+        return copyBtn;
+    }
+
+    // Add viral score badge
+    function addViralScore(element, score, category) {
+        const scoreBadge = document.createElement('span');
+        scoreBadge.className = 'viral-score-badge';
+        scoreBadge.textContent = `🔥 ${score}/100`;
+        scoreBadge.title = category;
+        
+        let badgeColor = '#dc3545'; // Red for low scores
+        if (score >= 80) badgeColor = '#28a745'; // Green for high scores
+        else if (score >= 70) badgeColor = '#ffc107'; // Yellow for medium scores
+        else if (score >= 60) badgeColor = '#fd7e14'; // Orange for below average
+        
+        scoreBadge.style.cssText = `
+            display: inline-block;
+            background: ${badgeColor};
+            color: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 8px;
+            vertical-align: middle;
+        `;
+        
+        element.appendChild(scoreBadge);
+        return scoreBadge;
+    }
+
     // Show result message
     function showMessage(message, type = 'success') {
         resultMessage.textContent = message;
@@ -337,9 +417,56 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Convert markdown table to HTML with script generation buttons
     function convertMarkdownTableWithScriptButtons(markdown) {
-        const html = convertMarkdownTable(markdown);
-        // Add script generation buttons to each row
-        return html.replace(/<tr>/g, '<tr class="idea-row">').replace(/<\/tr>/g, '<td><button class="script-btn" onclick="generateScript(this)">📝 Get Script</button></td></tr>');
+        const lines = markdown.split('\n').filter(line => line.trim());
+        let html = '<div class="viral-ideas-table"><table>';
+        let headers = [];
+        
+        lines.forEach((line, index) => {
+            if (index === 0) {
+                // Header row
+                headers = line.split('|').map(cell => cell.trim()).filter(cell => cell);
+                html += '<thead><tr>';
+                headers.forEach(header => {
+                    html += `<th>${header}</th>`;
+                });
+                html += '<th>Actions</th></tr></thead><tbody>';
+            } else if (line.includes('---')) {
+                // Skip separator line
+                return;
+            } else {
+                // Data row
+                const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
+                if (cells.length >= 2) {
+                    const ideaTitle = cells[1].replace(/\*\*/g, '').replace(/"/g, '').trim();
+                    html += '<tr class="idea-row" data-idea="' + ideaTitle.replace(/"/g, '&quot;') + '">';
+                    
+                    cells.forEach((cell, cellIndex) => {
+                        const label = headers[cellIndex] || `Column ${cellIndex + 1}`;
+                        if (cellIndex === 1) {
+                            // This is the idea title - add copy button and data label for mobile
+                            html += `<td class="idea-title-cell" data-label="${label}">
+                                <span class="idea-title">${cell}</span>
+                                <div class="idea-actions">
+                                    <button class="copy-btn-small" onclick="copyToClipboard('${ideaTitle.replace(/'/g, "\\'")}')">📋</button>
+                                </div>
+                            </td>`;
+                        } else {
+                            html += `<td data-label="${label}">${cell}</td>`;
+                        }
+                    });
+                    
+                    // Add actions column
+                    html += `<td class="actions-cell" data-label="Actions">
+                        <button class="script-btn" onclick="generateScript(this)">📝 Get Script</button>
+                        <button class="remix-btn" onclick="remixIdea(this)" style="margin-left: 4px;">🔄 Remix</button>
+                    </td>`;
+                    html += '</tr>';
+                }
+            }
+        });
+        
+        html += '</tbody></table></div>';
+        return html;
     }
 
     // Safely create HTML content from string using secure DOM methods
@@ -520,5 +647,317 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    }
+
+    // Global functions for inline onclick handlers
+    window.copyToClipboard = async function(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            showMessage(`Copied: "${text.substring(0, 50)}..."`, 'success');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            showMessage('Failed to copy text', 'error');
+        }
+    };
+
+    window.remixIdea = async function(button) {
+        const row = button.closest('tr');
+        const idea = row.getAttribute('data-idea');
+        
+        if (!idea) {
+            showMessage('Could not find idea to remix', 'error');
+            return;
+        }
+
+        // Simple client-side remix using different viral patterns
+        const remixPatterns = [
+            `Nobody talks about ${idea.toLowerCase()}`,
+            `I tried ${idea.toLowerCase()} for 30 days and the results shocked me`,
+            `POV: You're 25 and just realized ${idea.toLowerCase()}`,
+            `Why I stopped ${idea.toLowerCase().replace('how', 'doing').replace('why', 'believing')}`,
+            `The truth about ${idea.toLowerCase()} that experts won't tell you`
+        ];
+
+        const remixedIdeas = remixPatterns.map(pattern => pattern.charAt(0).toUpperCase() + pattern.slice(1));
+        
+        // Display remixed ideas
+        let remixHtml = `<div class="remix-results">
+            <h4>🔄 Remixed Variations of: "${idea}"</h4>
+            <div class="remix-list">`;
+        
+        remixedIdeas.forEach((remixedIdea, index) => {
+            remixHtml += `<div class="remix-item">
+                <span class="remix-text">${remixedIdea}</span>
+                <button class="copy-btn-small" onclick="copyToClipboard('${remixedIdea.replace(/'/g, "\\'")}')">📋 Copy</button>
+            </div>`;
+        });
+        
+        remixHtml += `</div></div>`;
+        
+        // Insert remix results after the current row
+        const remixRow = document.createElement('tr');
+        remixRow.className = 'remix-row';
+        remixRow.innerHTML = `<td colspan="100%" style="padding: 15px; background: #f8f9fa;">${remixHtml}</td>`;
+        
+        // Remove any existing remix rows
+        const existingRemix = row.parentNode.querySelector('.remix-row');
+        if (existingRemix) {
+            existingRemix.remove();
+        }
+        
+        // Insert new remix row
+        row.parentNode.insertBefore(remixRow, row.nextSibling);
+    };
+
+    // Add touch-friendly features for mobile
+    function initMobileTouchFeatures() {
+        if ('ontouchstart' in window) {
+            // Add swipe-to-copy for script content
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.script-content')) {
+                    const scriptElement = e.target.closest('.script-content');
+                    let touchStart = 0;
+                    
+                    scriptElement.addEventListener('touchstart', (touchEvent) => {
+                        touchStart = touchEvent.touches[0].clientX;
+                    }, { passive: true });
+                    
+                    scriptElement.addEventListener('touchend', (touchEvent) => {
+                        const touchEnd = touchEvent.changedTouches[0].clientX;
+                        if (touchStart - touchEnd > 50) {
+                            // Swipe left - copy content
+                            copyToClipboard(scriptElement.textContent.trim());
+                            showMobileToast('Copied script to clipboard! 📋');
+                        }
+                    }, { passive: true });
+                }
+            });
+
+            // Add haptic feedback for button presses
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('.script-btn, .remix-btn, .copy-btn-small, .submit-btn, .luxury-btn, .trends-btn')) {
+                    // Trigger haptic feedback on supported devices
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                }
+            });
+        }
+    }
+
+    // Mobile toast notification system
+    function showMobileToast(message, duration = 2000) {
+        // Remove any existing toasts
+        const existingToasts = document.querySelectorAll('.mobile-toast');
+        existingToasts.forEach(toast => toast.remove());
+        
+        const toast = document.createElement('div');
+        toast.className = 'mobile-toast';
+        toast.textContent = message;
+        
+        // Add toast styles directly if CSS hasn't loaded yet
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold, #d4af37);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            z-index: 10000;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideUp 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideDown 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    // PWA-style local storage for mobile draft saving
+    function initMobileDraftSaving() {
+        const isMobile = window.innerWidth < 768;
+        
+        if (isMobile) {
+            // Auto-save trending topic input
+            const topicInput = document.getElementById('topic');
+            if (topicInput) {
+                // Load saved draft on page load
+                const savedTopic = localStorage.getItem('viralTrendsDraft');
+                if (savedTopic) {
+                    const draftData = JSON.parse(savedTopic);
+                    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+                    
+                    if (draftData.timestamp > oneHourAgo) {
+                        topicInput.value = draftData.topic;
+                        showMobileToast('💾 Restored your draft from earlier', 3000);
+                    }
+                }
+                
+                // Auto-save on input blur
+                topicInput.addEventListener('blur', saveDraft);
+                topicInput.addEventListener('input', debounce(saveDraft, 2000));
+            }
+            
+            // Auto-save playbook form inputs
+            const playbookInputs = document.querySelectorAll('#playbookForm input, #playbookForm select');
+            playbookInputs.forEach(input => {
+                // Load saved drafts
+                const savedValue = localStorage.getItem(`playbook_${input.name || input.id}`);
+                if (savedValue && input.type !== 'checkbox') {
+                    input.value = savedValue;
+                } else if (savedValue && input.type === 'checkbox') {
+                    input.checked = savedValue === 'true';
+                }
+                
+                // Auto-save changes
+                input.addEventListener('blur', () => savePlaybookField(input));
+                if (input.type === 'checkbox') {
+                    input.addEventListener('change', () => savePlaybookField(input));
+                }
+            });
+        }
+    }
+    
+    function saveDraft() {
+        const topicInput = document.getElementById('topic');
+        if (topicInput && topicInput.value.trim()) {
+            const draftData = {
+                topic: topicInput.value.trim(),
+                timestamp: Date.now()
+            };
+            localStorage.setItem('viralTrendsDraft', JSON.stringify(draftData));
+        }
+    }
+    
+    function savePlaybookField(input) {
+        const value = input.type === 'checkbox' ? input.checked : input.value;
+        if (value) {
+            localStorage.setItem(`playbook_${input.name || input.id}`, value);
+        }
+    }
+    
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // Clear old drafts (older than 24 hours)
+    function clearOldDrafts() {
+        const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+        
+        try {
+            const savedTopic = localStorage.getItem('viralTrendsDraft');
+            if (savedTopic) {
+                const draftData = JSON.parse(savedTopic);
+                if (draftData.timestamp < oneDayAgo) {
+                    localStorage.removeItem('viralTrendsDraft');
+                }
+            }
+        } catch (e) {
+            // Clear corrupted data
+            localStorage.removeItem('viralTrendsDraft');
+        }
+        
+        // Clear old playbook fields
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('playbook_')) {
+                // For simplicity, we'll keep these for the session
+                // In a real app, you'd add timestamps here too
+            }
+        });
+    }
+
+    // Enhanced mobile loading with better UX
+    function showMobileLoadingOverlay() {
+        if (window.innerWidth < 768) {
+            const overlay = document.createElement('div');
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = `
+                <div class="loading-card">
+                    <div class="loading-spinner"></div>
+                    <h3>Generating Viral Ideas</h3>
+                    <p>This usually takes 45-60 seconds</p>
+                    <div class="loading-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="loading-timer">Estimated: 60s</div>
+                    <div class="loading-tips">
+                        <p>💡 Tip: Screenshot your favorites for later!</p>
+                    </div>
+                    <button class="cancel-btn" onclick="cancelGeneration()">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            // Auto-hide after 60 seconds as fallback
+            setTimeout(() => {
+                if (overlay.parentNode) {
+                    overlay.remove();
+                }
+            }, 60000);
+            
+            return overlay;
+        }
+        return null;
+    }
+    
+    // Global function for canceling generation
+    window.cancelGeneration = function() {
+        const overlay = document.querySelector('.loading-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+        
+        // Reset form buttons
+        const submitBtns = document.querySelectorAll('.submit-btn, .trends-btn');
+        submitBtns.forEach(btn => {
+            btn.disabled = false;
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoading = btn.querySelector('.btn-loading');
+            if (btnText) btnText.style.display = 'inline';
+            if (btnLoading) btnLoading.style.display = 'none';
+        });
+        
+        showMobileToast('Generation cancelled', 2000);
+    };
+
+    // Initialize all mobile features
+    function initAllMobileFeatures() {
+        initMobileTouchFeatures();
+        initMobileDraftSaving();
+        clearOldDrafts();
+        
+        // Add mobile loading to form submissions
+        const forms = document.querySelectorAll('#trendsForm, #playbookForm');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (window.innerWidth < 768) {
+                    setTimeout(() => showMobileLoadingOverlay(), 100);
+                }
+            });
+        });
+    }
+
+    // Initialize mobile features when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAllMobileFeatures);
+    } else {
+        initAllMobileFeatures();
     }
 });

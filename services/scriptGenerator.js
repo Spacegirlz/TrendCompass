@@ -8,37 +8,50 @@ class ScriptGeneratorService {
     async generateVideoScript(viralIdea, platform = 'TikTok', duration = '60 seconds') {
         console.log(`Generating script for: ${viralIdea}`);
         
-        const prompt = `Create a complete video script for this viral idea: "${viralIdea}"
+        const prompt = `Write ONLY the first 3-5 seconds of a video about: "${viralIdea}"
 
 Platform: ${platform}
-Duration: ${duration}
 
-CRITICAL: Write in authentic inner voice - the thoughts people think but don't say out loud. Think like famous hook writers who understand human psychology.
+Use one of these psychological patterns:
+1. SHOCKING ADMISSION: "I'm embarrassed to admit this but..."
+2. CHALLENGE BELIEF: "Everything you know about X is wrong..."
+3. URGENT WARNING: "If you're doing X, stop watching and fix this first..."
+4. INSIDER SECRET: "I worked at X for 5 years, here's what they don't tell you..."
+5. VULNERABLE SHARE: "This is going to sound crazy but..."
+6. REALITY CHECK: "Nobody talks about how..."
+7. EXPERIMENT REVEAL: "I tried X for Y days and..."
+8. AUTHORITY CALLOUT: "Doctors/Experts are lying to you about..."
+
+The hook must:
+- Sound like someone's actual thoughts (use "I", "you", "we")
+- Reference a specific detail, number, or timeframe
+- Create immediate tension that demands resolution
+- Use conversational language with minor grammatical imperfections
+- Feel like overhearing someone's private confession
+
+GOOD EXAMPLES:
+"Okay so I just found out why I've been tired for 3 years and I'm actually pissed..."
+"Nobody talks about how your morning routine is secretly sabotaging your productivity..."
+"I'm embarrassed to admit this but I spent $2000 testing productivity apps and only one actually worked..."
+"If you're drinking coffee first thing in the morning, stop watching and fix this first..."
+
+BAD EXAMPLES (too polished/marketing):
+"Today I'm going to share amazing tips..."
+"Welcome back to my channel, in this video..."
+"Here are the top 5 ways to..."
 
 Format as JSON:
 {
-  "hook": "First 3-5 seconds - raw, authentic thought that stops the scroll",
-  "script": "Complete script with [VISUAL CUES] and timing",
-  "cta": "Strong call-to-action that feels natural",
-  "thumbnail_text": "Text overlay for thumbnail",
-  "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3"],
-  "engagement_tactics": ["Comment bait", "Share trigger", "Save trigger"]
+  "hook": "The opening 3-5 seconds - raw and authentic",
+  "hook_type": "Which psychological pattern was used",
+  "viral_score": "Rate 1-100 how likely this is to stop the scroll",
+  "why_it_works": "Brief explanation of the psychology",
+  "thumbnail_text": "Text overlay for thumbnail (max 6 words)",
+  "follow_up_lines": ["Next 2-3 lines to maintain engagement"],
+  "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3"]
 }
 
-HOOK REQUIREMENTS:
-- Write what someone ACTUALLY thinks, not marketing speak
-- Use raw, honest language people use in their heads
-- Tap into secret fears, desires, or frustrations
-- Make it feel like overhearing a private conversation
-- Reference specific details, not generic categories
-
-EXAMPLES OF AUTHENTIC HOOKS (study the pattern):
-Topic: Weight Loss → "I'm about to tell you why you're still fat and it's not what you think..."
-Topic: Dating → "Every guy thinks this makes him attractive but it actually makes women run..."
-Topic: Money → "I found out why I'm broke and it has nothing to do with my salary..."
-Topic: Skincare → "Your skincare routine is aging you faster and here's proof..."
-
-For "${viralIdea}" - write a hook that sounds like someone's real internal monologue, not a polished ad.`;
+Write ONLY the opening hook that makes people stop scrolling:`;
 
         try {
             const response = await this.perplexityService.makeRequest({

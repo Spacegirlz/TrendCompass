@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const PerplexityService = require('./perplexity');
+const { calculateViralScore, batchAnalyzeIdeas } = require('../utils/viralScore');
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const perplexityService = new PerplexityService();
@@ -22,33 +23,49 @@ async function generateTrendingIdeas(topic, userLanguage = 'en') {
             }
         }
         
-        const prompt = `YOU MUST CREATE SPECIFIC VIRAL VIDEO TITLES, NOT CATEGORIES.
+        const prompt = `Generate viral video ideas for "${topic}" using ONLY these proven viral formats:
 
-Topic: "${topic}"
+MANDATORY VIRAL PATTERNS (pick from these):
+1. "Nobody talks about [shocking truth]..." 
+2. "I tried [specific thing] every day for [X days] and [unexpected result]"
+3. "POV: You're [age] and just realized [harsh truth]"
+4. "[Expert] reacts to [controversial thing]"
+5. "The [specific thing] that [authority] doesn't want you to know"
+6. "Why I stopped [common practice] after [specific incident]"
+7. "Watch me [do risky thing] so you don't have to"
+8. "[Specific group] is lying to you about [topic]"
+9. "I can't believe [authority] hid this from us"
+10. "This [thing] changed everything I thought about [topic]"
+11. "If you're doing [common thing], stop watching and fix this first"
+12. "I worked at [place] for [X years], here's what they don't tell you"
 
-MANDATORY EXAMPLES OF WHAT I WANT:
-✅ "I took **saw palmetto** for 30 days at age 28 - shocking **prostate** results (time-lapse)"
-✅ "Urologist reacts to viral **prostate** myths 25-year-olds believe"  
-✅ "POV: You're 30 and your doctor says your **prostate** is already enlarged"
-✅ "5 signs your **prostate** is failing at 25 (doctors won't tell you)"
-✅ "**Tribute-for-Toes** Challenges - Finsubs send tribute payments to unlock staged close-up toe pics"
+For "${topic}", create 12 SPECIFIC videos using these patterns.
 
-FORBIDDEN RESPONSES:
-❌ "Regular Exercise"
-❌ "Plant-Based Diets" 
-❌ "Stress Reduction"
-❌ ANY GENERIC HEALTH CATEGORY
+Example outputs for "prostate health":
+✅ "Nobody talks about how your morning pee tells you everything about your prostate"
+✅ "I tried the Japanese prostate exercise for 30 days at age 35"
+✅ "POV: You're 28 and your urologist just said 'we need to talk'"
+✅ "Doctors are lying to you about prostate supplements (here's proof)"
+✅ "Why I stopped drinking coffee after my PSA results came back"
 
-CREATE 12 VIRAL VIDEO TITLES for "${topic}":
-Each title must be a complete video someone can film TODAY with:
-- Specific numbers/timeframes 
-- Shocking claims or angles
-- **Bold** key terms
-- Viral formats like "I tried X for Y days", "Doctor reacts to", "POV:", "X signs that"
+Example outputs for "productivity":
+✅ "Nobody talks about why successful people wake up miserable"
+✅ "I tried the 4-hour workday for 90 days and almost went broke"
+✅ "POV: You're 25 and just realized productivity gurus are scamming you"
+
+FORBIDDEN: Don't give me categories like "Regular Exercise" or "Plant-Based Diets". 
+Give me exact video titles people would click immediately.
+
+Each title must:
+- Use a specific viral pattern from the list above
+- Include specific numbers, ages, or timeframes when relevant
+- Sound like something a real person would say, not marketing copy
+- Create immediate curiosity or tension
+- Be filmable TODAY with basic equipment
 
 Return this exact JSON:
 {
-  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Hook Strategy** | **Content Type** |",
+  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Pattern Used** | **Hook Type** |",
   "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |", 
   "unique_insights": "3 unique filming/content creation insights specific to this topic",
   "viral_hashtags": "trending hashtag lists optimized for each platform"
@@ -154,6 +171,44 @@ Return this exact JSON:
         }
         
         console.log(`Ultra-specific viral content ideas generated successfully using ${modelToUse}`);
+        
+        // Add viral scoring to each idea if we can extract them
+        if (result.trending_ideas_table) {
+            try {
+                // Extract video titles from the table for scoring
+                const tableRows = result.trending_ideas_table.split('\n').slice(1); // Skip header
+                const ideas = tableRows
+                    .filter(row => row.trim() && !row.includes('---'))
+                    .map(row => {
+                        const cells = row.split('|').map(cell => cell.trim());
+                        if (cells.length >= 2) {
+                            const title = cells[1].replace(/\*\*/g, '').replace(/"/g, '');
+                            return title;
+                        }
+                        return null;
+                    })
+                    .filter(Boolean);
+                
+                if (ideas.length > 0) {
+                    const scoredIdeas = batchAnalyzeIdeas(ideas);
+                    console.log('Added viral scores to ideas:', scoredIdeas.length);
+                    
+                    // Add viral score summary to the result
+                    result.viral_scores = {
+                        average_score: Math.round(scoredIdeas.reduce((sum, idea) => sum + (idea.score || 0), 0) / scoredIdeas.length),
+                        top_scored: scoredIdeas.slice(0, 3).map(idea => ({
+                            title: idea.title,
+                            score: idea.score,
+                            category: idea.category
+                        })),
+                        total_analyzed: scoredIdeas.length
+                    };
+                }
+            } catch (scoringError) {
+                console.log('Viral scoring failed, continuing without scores:', scoringError.message);
+            }
+        }
+        
         return result;
 
     } catch (error) {

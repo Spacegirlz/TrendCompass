@@ -10,13 +10,34 @@ class PerplexityService {
     async generateTrendingIdeas(topic) {
         console.log(`Generating trending ideas with Perplexity for topic: ${topic}`);
         
-        const prompt = `Generate 12+ ultra-specific viral content ideas for "${topic}". I need extremely specific video titles that would go viral, not generic categories.
+        const prompt = `Generate 12+ viral video ideas for "${topic}" using ONLY proven viral patterns that are trending NOW.
+
+MANDATORY VIRAL PATTERNS (use these exact formats):
+1. "Nobody talks about [shocking truth]..." 
+2. "I tried [specific thing] every day for [X days] and [unexpected result]"
+3. "POV: You're [age] and just realized [harsh truth]"
+4. "[Expert] reacts to [controversial thing]"
+5. "The [specific thing] that [authority] doesn't want you to know"
+6. "Why I stopped [common practice] after [specific incident]"
+7. "Watch me [do risky thing] so you don't have to"
+8. "[Specific group] is lying to you about [topic]"
+9. "I can't believe [authority] hid this from us"
+10. "This [thing] changed everything I thought about [topic]"
+
+For "${topic}", create SPECIFIC videos using these patterns with current trending angles.
+
+Example format:
+✅ "Nobody talks about how your morning routine is secretly sabotaging your productivity"
+✅ "I tried working 4 hours a day for 60 days and my income actually doubled"
+✅ "POV: You're 25 and just realized hustle culture destroyed your mental health"
+
+CRITICAL: Each title must sound like something a real person would say, not marketing copy.
 
 Format your response as JSON with this exact structure:
 {
-  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Hook Strategy** | **Viral Hashtags** |\\n|---|-------------------------|-------------------------|---------------------|\\n| 1 | \"I tried [specific action] for [timeframe]—here's what happened\" | Experiment reveal | #hashtag1 #hashtag2 |\\n...",
+  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Pattern Used** | **Current Trend Connection** |\\n|---|-------------------------|-------------------------|---------------------|\\n| 1 | \"[Exact clickable title]\" | [Pattern number] | [Why this is trending now] |\\n...",
   "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |\\n|-------------|--------|---------|-----------|\\n| Title 1 | High | Medium | High |\\n...",
-  "unique_insights": "1. Insight about current trends\\n2. Insight about viral hooks\\n3. Insight about platform strategies",
+  "unique_insights": "1. Current viral trend insight\\n2. Psychology behind what's working now\\n3. Platform-specific viral mechanics",
   "viral_hashtags": {
     "TikTok": "#trend1 #trend2 #trend3",
     "YouTube": "#keyword1 #keyword2 #keyword3", 
@@ -24,14 +45,10 @@ Format your response as JSON with this exact structure:
   }
 }
 
-Make video titles extremely specific like:
-- "I spent $500 on [specific thing] to test if [specific claim] is true"
-- "POV: You're [specific role] and [specific situation happens]"
-- "I tried [specific method] for [timeframe] and the results shocked everyone"
+FORBIDDEN: Generic categories like "healthy eating tips" or "productivity hacks"
+REQUIRED: Specific, clickable titles using proven viral patterns
 
-Use bold formatting with ** around key words. Focus on current viral formats and trending hooks.
-
-For platform_heatmap, use "High", "Medium", "Low" instead of emojis to show performance potential on each platform.`;
+For platform_heatmap, use "High", "Medium", "Low" to show performance potential.`;
 
         try {
             const response = await this.makeRequest({
