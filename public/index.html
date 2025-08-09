@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Viral Strategy Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="marble-bg"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="brand">
+                <h1>Luxury Viral Strategy Generator</h1>
+                <p class="tagline">Dual-Track Content Playbooks for Elite Creators</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Generate Your Million-Dollar Strategy</h2>
+                    <p>Complete the form below to receive your personalized luxury viral content playbook with both public and private member strategies.</p>
+                </div>
+
+                <form id="playbookForm" class="luxury-form">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="niche">Your Niche *</label>
+                        <input type="text" id="niche" name="niche" placeholder="e.g., Health & Wellness, Fitness, Luxury Lifestyle" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="audience">Target Audience *</label>
+                        <input type="text" id="audience" name="audience" placeholder="e.g., Professional women 25-40, Health-conscious men 30-50" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goal">Primary Goal *</label>
+                        <select id="goal" name="goal" required>
+                            <option value="">Select your primary goal</option>
+                            <option value="viral_growth">Viral Growth & Reach</option>
+                            <option value="engagement">High Engagement & Community</option>
+                            <option value="monetization">Direct Monetization</option>
+                            <option value="brand_building">Premium Brand Building</option>
+                            <option value="lead_generation">Lead Generation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="platforms">Target Platforms *</label>
+                        <div class="platform-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="Instagram"> Instagram
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="TikTok"> TikTok
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="Twitter/X"> Twitter/X
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="Reddit"> Reddit
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="YouTube"> YouTube
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="platforms" value="LinkedIn"> LinkedIn
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timezone">Your Timezone *</label>
+                        <select id="timezone" name="timezone" required>
+                            <option value="">Select your timezone</option>
+                            <option value="America/New_York">Eastern Time (EST/EDT)</option>
+                            <option value="America/Chicago">Central Time (CST/CDT)</option>
+                            <option value="America/Denver">Mountain Time (MST/MDT)</option>
+                            <option value="America/Los_Angeles">Pacific Time (PST/PDT)</option>
+                            <option value="Europe/London">London (GMT/BST)</option>
+                            <option value="Europe/Paris">Paris (CET/CEST)</option>
+                            <option value="Europe/Berlin">Berlin (CET/CEST)</option>
+                            <option value="Asia/Tokyo">Tokyo (JST)</option>
+                            <option value="Asia/Shanghai">Shanghai (CST)</option>
+                            <option value="Asia/Dubai">Dubai (GST)</option>
+                            <option value="Australia/Sydney">Sydney (AEST/AEDT)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Generate My Luxury Playbook</span>
+                        <span class="btn-loading" style="display: none;">
+                            <svg class="spinner" width="20" height="20" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                                    <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+                                </circle>
+                            </svg>
+                            Generating...
+                        </span>
+                    </button>
+                </form>
+
+                <div id="resultMessage" class="result-message" style="display: none;"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Luxury Viral Strategy Generator. Premium content solutions for elite creators.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

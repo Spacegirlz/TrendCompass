@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Luxury Viral Strategy Playbook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #111111;
+            --ink: #141416;
+            --gold: #d4af37;
+            --gold-soft: #c9a33a;
+            --cream: #faf7f3;
+            --ivory: #fdf8f2;
+            --stone: #efebe5;
+            --marble-vein: #e8e2da;
+            --rose: #f7e9e9;
+            --shadow: 0 6px 22px rgba(0,0,0,.14);
+            --radius: 14px;
+        }
+
+        * { box-sizing: border-box; }
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--cream);
+            color: #222;
+            font-family: "Helvetica Neue", Arial, system-ui, -apple-system, Segoe UI, Roboto, "Liberation Sans", sans-serif;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Faux marble background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(1200px 800px at 10% 10%, rgba(255,255,255,.7), transparent 60%),
+                radial-gradient(1000px 700px at 90% 20%, rgba(255,255,255,.6), transparent 60%),
+                linear-gradient(115deg, rgba(232,226,218,.9), rgba(252,250,246,.85)),
+                repeating-linear-gradient(145deg, rgba(0,0,0,.02) 0 14px, rgba(0,0,0,.03) 14px 28px);
+            filter: contrast(102%) saturate(102%);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255,255,255,.95);
+            box-shadow: var(--shadow);
+            page-break-inside: avoid;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--black), #1b1b1d);
+            color: var(--gold);
+            padding: 48px 40px;
+            border-bottom: 4px solid var(--gold);
+            text-align: center;
+            position: relative;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+        }
+
+        .brand {
+            letter-spacing: .5px;
+            font-weight: 700;
+            font-size: 32px;
+            margin: 0;
+            font-family: "Playfair Display", Georgia, serif;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sub {
+            color: #f1e8cf;
+            margin: 6px 0 0;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .meta {
+            margin-top: 10px;
+            color: #e9dfc3;
+            font-size: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Section Styles */
+        h2 {
+            font-family: "Playfair Display", Georgia, serif;
+            color: var(--gold-soft);
+            font-weight: 700;
+            font-size: 22px;
+            margin: 0 0 10px;
+            letter-spacing: .2px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(201, 163, 58, 0.05));
+            border-radius: var(--radius);
+            border-left: 4px solid var(--gold);
+        }
+
+        h3 {
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+
+        .card {
+            background: rgba(255,255,255,.9);
+            border: 1px solid var(--stone);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 26px;
+            margin: 15px 0;
+        }
+
+        /* Executive Summary */
+        .summary {
+            background: var(--cream);
+            border-left: 4px solid var(--gold);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .summary h3 {
+            color: var(--gold-soft);
+            margin-top: 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: var(--black);
+            color: var(--gold);
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--stone);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        tr:nth-child(even) td {
+            background: var(--ivory);
+        }
+
+        tr:nth-child(odd) td {
+            background: white;
+        }
+
+        tbody tr:hover td {
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        /* Idea Cards */
+        .idea-card {
+            margin: 30px 0;
+            border: 2px solid var(--gold);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .idea-header {
+            background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+            color: white;
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 18px;
+            font-family: "Playfair Display", Georgia, serif;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .idea-tracks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .track {
+            padding: 25px;
+        }
+
+        .track-public {
+            background: rgba(255,255,255,0.95);
+            border-right: 2px solid var(--gold);
+        }
+
+        .track-private {
+            background: rgba(247, 233, 233, 0.6);
+        }
+
+        .track-title {
+            font-weight: 700;
+            color: var(--gold-soft);
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-family: "Playfair Display", Georgia, serif;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 5px;
+        }
+
+        .track-public .track-title::before {
+            content: "🌍 ";
+        }
+
+        .track-private .track-title::before {
+            content: "🔒 ";
+        }
+
+        .track-description {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold);
+        }
+
+        .hooks {
+            margin-bottom: 20px;
+        }
+
+        .hooks-title {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 13px;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .hook {
+            background: rgba(255,255,255,0.9);
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border-left: 4px solid var(--gold);
+            font-size: 13px;
+            font-style: italic;
+            color: #444;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .hashtags {
+            margin-top: 20px;
+        }
+
+        .hashtags-title {
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 13px;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .hashtag-list {
+            color: var(--gold-soft);
+            font-size: 12px;
+            line-height: 1.8;
+            word-break: break-all;
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        /* Platform Heat Map */
+        .heat-cell {
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Content Rotation */
+        .rotation-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .day-card {
+            background: white;
+            border: 2px solid var(--stone);
+            border-radius: var(--radius);
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .day-title {
+            font-weight: 700;
+            color: var(--gold-soft);
+            margin-bottom: 8px;
+        }
+
+        .day-content {
+            color: #555;
+            line-height: 1.4;
+        }
+
+        /* Posting Times */
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .time-card {
+            background: white;
+            border: 2px solid var(--stone);
+            border-radius: var(--radius);
+            padding: 15px;
+        }
+
+        .platform-name {
+            font-weight: 700;
+            color: var(--gold-soft);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .time-slot {
+            background: var(--ivory);
+            padding: 6px 10px;
+            margin: 4px 0;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--black);
+            color: var(--gold);
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body::before { display: none; }
+            .page { box-shadow: none; }
+            .card { break-inside: avoid; }
+            .idea-card { break-inside: avoid; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .idea-tracks {
+                grid-template-columns: 1fr;
+            }
+            
+            .track-public {
+                border-right: none;
+                border-bottom: 1px solid var(--stone);
+            }
+            
+            .rotation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <header>
+            <h1 class="brand">Luxury Viral Strategy Playbook</h1>
+            <p class="sub">Dual-Track Content Strategy for {{name}}</p>
+            <p class="meta">Generated on {{generated_date}} at {{generated_time}} | Niche: {{niche}}</p>
+        </header>
+
+        <!-- Executive Summary -->
+        <div class="summary">
+            <h3>Executive Summary</h3>
+            <p><strong>Creator:</strong> {{name}}</p>
+            <p><strong>Niche:</strong> {{niche}}</p>
+            <p><strong>Target Audience:</strong> {{audience}}</p>
+            <p><strong>Primary Goal:</strong> {{goal}}</p>
+            <p><strong>Target Platforms:</strong> {{platforms}}</p>
+            <p><strong>Timezone:</strong> {{timezone}}</p>
+            <p><strong>Strategy Type:</strong> Dual-Track (Public + Private)</p>
+        </div>
+
+        <!-- Trend Ideas Overview -->
+        {{#if trend_ideas_table}}
+        <h2>📈 Trend Ideas Overview</h2>
+        <div class="card">
+            {{{trend_ideas_table}}}
+        </div>
+        {{/if}}
+
+        <!-- Platform Heat Map -->
+        {{#if platform_heatmap_table}}
+        <h2>🔥 Platform Heat Map</h2>
+        <div class="card">
+            {{{platform_heatmap_table}}}
+        </div>
+        {{/if}}
+
+        <!-- Detailed Ideas -->
+        {{#if ideas_with_hooks}}
+        <h2>💡 Detailed Content Ideas</h2>
+        {{#each ideas_with_hooks}}
+        <div class="idea-card">
+            <div class="idea-header">
+                {{index}}. {{title}}
+            </div>
+            <div class="idea-tracks">
+                <div class="track track-public">
+                    <div class="track-title">Public Track</div>
+                    <div class="track-description">{{public.description}}</div>
+                    
+                    {{#if public_hooks_list}}
+                    <div class="hooks">
+                        <div class="hooks-title">🎣 Content Hooks:</div>
+                        {{#each public_hooks_list}}
+                        <div class="hook">{{this}}</div>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    
+                    {{#if public_hashtags_formatted}}
+                    <div class="hashtags">
+                        <div class="hashtags-title"># Hashtags:</div>
+                        <div class="hashtag-list">{{public_hashtags_formatted}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+                
+                <div class="track track-private">
+                    <div class="track-title">Private Track</div>
+                    <div class="track-description">{{private.description}}</div>
+                    
+                    {{#if private_hooks_list}}
+                    <div class="hooks">
+                        <div class="hooks-title">🎣 Content Hooks:</div>
+                        {{#each private_hooks_list}}
+                        <div class="hook">{{this}}</div>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    
+                    {{#if private_hashtags_formatted}}
+                    <div class="hashtags">
+                        <div class="hashtags-title"># Hashtags:</div>
+                        <div class="hashtag-list">{{private_hashtags_formatted}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+
+        <!-- Content Rotation Plan -->
+        {{#if content_rotation_plan}}
+        <h2>📅 7-Day Content Rotation Plan</h2>
+        <div class="card">
+            {{#if content_rotation_plan.schedule}}
+            <div class="rotation-grid">
+                {{#each content_rotation_plan.schedule}}
+                <div class="day-card">
+                    <div class="day-title">{{day}}</div>
+                    <div class="day-content">{{content_type}}</div>
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <p>{{content_rotation_plan}}</p>
+            {{/if}}
+        </div>
+        {{/if}}
+
+        <!-- Posting Times -->
+        {{#if posting_times}}
+        <h2>⏰ Optimal Posting Times ({{posting_times.timezone_used}})</h2>
+        
+        {{#if posting_times.public}}
+        <h3>🌍 Public Track Posting Times</h3>
+        <div class="time-grid">
+            {{#each posting_times.public}}
+            <div class="time-card">
+                <div class="platform-name">{{@key}}</div>
+                {{#each this}}
+                <div class="time-slot">{{this}}</div>
+                {{/each}}
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if posting_times.private}}
+        <h3>🔒 Private Track Posting Times</h3>
+        <div class="time-grid">
+            {{#each posting_times.private}}
+            <div class="time-card">
+                <div class="platform-name">{{@key}}</div>
+                {{#each this}}
+                <div class="time-slot">{{this}}</div>
+                {{/each}}
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{/if}}
+
+        <!-- Implementation Notes -->
+        <h2>🚀 Implementation Notes</h2>
+        <div class="card">
+            <h3>Quick Start Guide:</h3>
+            <ol>
+                <li><strong>Week 1:</strong> Focus on Public Track content to build initial audience</li>
+                <li><strong>Week 2:</strong> Introduce Private Track teasers to create exclusivity</li>
+                <li><strong>Week 3+:</strong> Balance both tracks based on audience response</li>
+            </ol>
+            
+            <h3>Success Metrics to Track:</h3>
+            <ul>
+                <li>Engagement rate (likes, comments, shares)</li>
+                <li>Follower growth rate</li>
+                <li>Click-through rates to private content</li>
+                <li>Conversion to premium community</li>
+            </ul>
+            
+            <h3>Content Safety:</h3>
+            <p>All Public Track content has been filtered for platform compliance. Private Track content is designed for premium communities and direct messaging only.</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 Luxury Viral Strategy Generator | Generated for {{name}} | Premium Content Solutions</p>
+        </footer>
+    </div>
+</body>
+</html>
