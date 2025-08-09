@@ -5,7 +5,7 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
         console.log(`Sending email to ${recipientEmail}...`);
         
         // Use configured email address
-        const senderEmail = 'piet@virtualsatchel.com';
+        const senderEmail = 'admin@virtualsatchel.com';
         
         // Check if email credentials are configured
         if (!process.env.GMAIL_PASS) {
@@ -29,14 +29,14 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
         });
         
         const mailOptions = {
-            from: `"TrendCompass Viral Strategy" <${senderEmail}>`,
+            from: `"Viral Trends" <${senderEmail}>`,
             to: recipientEmail,
-            subject: `🏆 Your TrendCompass Viral Strategy Playbook is Ready, ${recipientName}!`,
+            subject: `🏆 Your Viral Trends Strategy Playbook is Ready, ${recipientName}!`,
             html: `
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f5f0;">
                     <!-- Header -->
                     <div style="background: linear-gradient(135deg, #0f0f10, #1b1b1d); color: #d4af37; padding: 40px 30px; text-align: center; border-radius: 0 0 14px 14px;">
-                        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px;">TrendCompass Viral Strategy</h1>
+                        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0.5px;">Viral Trends</h1>
                         <p style="margin: 8px 0 0; color: #f1e8cf; font-size: 16px;">Your Premium Content Playbook</p>
                     </div>
                     
@@ -45,7 +45,7 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
                         <h2 style="color: #c9a33a; margin: 0 0 20px; font-size: 24px;">Hello ${recipientName},</h2>
                         
                         <p style="color: #333; line-height: 1.6; margin-bottom: 20px;">
-                            Your personalized <strong>TrendCompass Viral Strategy Playbook</strong> has been generated and is ready for implementation!
+                            Your personalized <strong>Viral Trends Strategy Playbook</strong> has been generated and is ready for implementation!
                         </p>
                         
                         <div style="background: #f8f5f0; padding: 25px; border-radius: 12px; margin: 25px 0; border-left: 4px solid #d4af37;">
