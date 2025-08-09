@@ -96,12 +96,30 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const trendsBtn = trendsForm.querySelector('.luxury-btn');
+        const trendsBtn = trendsForm.querySelector('.trends-btn');
         const btnText = trendsBtn.querySelector('.btn-text');
+        const btnLoading = trendsBtn.querySelector('.btn-loading');
+        const loadingTimer = trendsBtn.querySelector('.loading-timer');
+        const progressBar = trendsBtn.querySelector('.progress-bar');
         
         // Set loading state
         trendsBtn.disabled = true;
-        btnText.textContent = '🔍 Researching Trends...';
+        btnText.style.display = 'none';
+        btnLoading.style.display = 'flex';
+        
+        // Start progress animation
+        progressBar.style.animation = 'progress 60s linear';
+        
+        // Update timer countdown
+        let timeLeft = 60;
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                loadingTimer.textContent = `Estimated: ${timeLeft}s`;
+            } else {
+                loadingTimer.textContent = 'Almost ready...';
+            }
+        }, 1000);
         
         try {
             const response = await fetch('/api/generate-trends', {
@@ -123,8 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             showMessage('Network error. Please check your connection and try again.', 'error');
         } finally {
+            // Reset loading state
+            clearInterval(timerInterval);
             trendsBtn.disabled = false;
-            btnText.textContent = '🔥 Get Trending Ideas';
+            btnText.style.display = 'inline';
+            btnLoading.style.display = 'none';
+            progressBar.style.animation = 'none';
+            progressBar.style.width = '0%';
         }
     });
 

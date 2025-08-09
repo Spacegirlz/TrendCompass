@@ -18,33 +18,39 @@
 /* Mode Selector Styles */
 .mode-selector {
     display: flex;
-    gap: 10px;
-    margin: 20px 0;
+    gap: 15px;
+    margin: 25px 0;
     justify-content: center;
 }
 
 .mode-btn {
-    padding: 12px 24px;
-    border: 2px solid var(--gold-soft);
-    background: rgba(255, 255, 255, 0.9);
+    padding: 16px 32px;
+    border: 3px solid var(--gold-soft);
+    background: rgba(255, 255, 255, 0.95);
     color: var(--gold-soft);
     border-radius: var(--radius);
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
-    font-size: 14px;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: var(--shadow-light);
 }
 
 .mode-btn:hover {
     background: var(--gold-soft);
     color: white;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .mode-btn.active {
     background: var(--gold);
     color: white;
     border-color: var(--gold);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
 }
 
 /* Trending Results Styles */
@@ -351,53 +357,99 @@ html, body {
     background: rgba(212, 175, 55, 0.05);
 }
 
-/* Submit Button */
-.submit-btn {
+/* Submit Button & Trending Button */
+.submit-btn, .luxury-btn, .trends-btn {
     background: linear-gradient(135deg, var(--gold), var(--gold-soft));
     color: white;
     border: none;
-    padding: 20px 40px;
+    padding: 24px 48px;
     border-radius: var(--radius);
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
     cursor: pointer;
     transition: var(--transition);
     box-shadow: var(--shadow);
     margin-top: 20px;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    text-transform: uppercase;
+    border: 3px solid var(--gold);
 }
 
-.submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+.submit-btn:hover:not(:disabled), .luxury-btn:hover:not(:disabled), .trends-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
 }
 
-.submit-btn:active {
-    transform: translateY(0);
+.submit-btn:active, .luxury-btn:active, .trends-btn:active {
+    transform: translateY(-1px);
 }
 
-.submit-btn:disabled {
+.submit-btn:disabled, .luxury-btn:disabled, .trends-btn:disabled {
     opacity: 0.8;
     cursor: not-allowed;
     transform: none;
 }
 
+/* Enhanced Loading States */
 .btn-loading {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
+    padding: 8px 0;
 }
 
-.spinner {
+.loading-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.loading-timer {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 8px;
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    width: 0%;
+    animation: progress 60s linear infinite;
 }
 
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+@keyframes progress {
+    from { width: 0%; }
+    to { width: 100%; }
 }
 
 /* Result Message */
