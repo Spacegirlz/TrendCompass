@@ -221,7 +221,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         html += `</div></div>`;
         
-        resultMessage.innerHTML = html;
+        // Safely clear and populate the result message using secure DOM methods
+        resultMessage.textContent = '';
+        const safeContent = createSafeHTMLContent(html);
+        resultMessage.appendChild(safeContent);
         resultMessage.className = 'result-message success trends-display';
         resultMessage.style.display = 'block';
         resultMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -308,8 +311,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        document.getElementById('scriptResults').innerHTML = html;
-        document.getElementById('scriptResults').scrollIntoView({ behavior: 'smooth' });
+        // Safely set content using secure DOM methods to prevent XSS
+        const scriptResults = document.getElementById('scriptResults');
+        scriptResults.textContent = '';
+        const safeContent = createSafeHTMLContent(html);
+        scriptResults.appendChild(safeContent);
+        scriptResults.scrollIntoView({ behavior: 'smooth' });
     }
 
     // Convert markdown formatting to HTML
@@ -333,6 +340,42 @@ document.addEventListener('DOMContentLoaded', function() {
         const html = convertMarkdownTable(markdown);
         // Add script generation buttons to each row
         return html.replace(/<tr>/g, '<tr class="idea-row">').replace(/<\/tr>/g, '<td><button class="script-btn" onclick="generateScript(this)">📝 Get Script</button></td></tr>');
+    }
+
+    // Safely create HTML content from string using secure DOM methods
+    function createSafeHTMLContent(htmlString) {
+        const container = document.createElement('div');
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        
+        // Remove any script tags and other dangerous elements
+        const scripts = doc.querySelectorAll('script');
+        scripts.forEach(script => script.remove());
+        
+        const iframes = doc.querySelectorAll('iframe');
+        iframes.forEach(iframe => iframe.remove());
+        
+        const objects = doc.querySelectorAll('object, embed');
+        objects.forEach(obj => obj.remove());
+        
+        // Remove dangerous event handlers
+        const allElements = doc.querySelectorAll('*');
+        allElements.forEach(elem => {
+            for (let i = elem.attributes.length - 1; i >= 0; i--) {
+                const attr = elem.attributes[i];
+                if (attr.name.startsWith('on')) {
+                    elem.removeAttribute(attr.name);
+                }
+            }
+        });
+        
+        // Clone the body content safely
+        const bodyContent = doc.body;
+        while (bodyContent.firstChild) {
+            container.appendChild(bodyContent.firstChild.cloneNode(true));
+        }
+        
+        return container;
     }
 
     // Convert markdown table to HTML
