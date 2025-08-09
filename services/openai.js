@@ -67,11 +67,35 @@ async function generateContent(userInputs) {
         
         let rawContent;
         try {
-            rawContent = JSON.parse(messageContent);
+            // Clean the content first
+            let cleanContent = messageContent.trim();
+            
+            // Remove any HTML tags if present (Vercel sometimes returns HTML errors)
+            if (cleanContent.includes('<html>') || cleanContent.includes('<!DOCTYPE')) {
+                console.error('Received HTML response instead of JSON:', cleanContent.substring(0, 200));
+                throw new Error('API returned HTML error page instead of JSON. Please check your API keys and try again.');
+            }
+            
+            // Remove markdown code blocks if present
+            if (cleanContent.startsWith('```json')) {
+                cleanContent = cleanContent.replace(/```json\s*/, '').replace(/\s*```$/, '');
+            }
+            
+            rawContent = JSON.parse(cleanContent);
         } catch (parseError) {
             console.error('JSON parse error:', parseError);
-            console.error('Failed to parse content:', messageContent);
-            throw new Error('GPT-5 returned invalid JSON format');
+            console.error('Failed to parse content:', messageContent?.substring(0, 500) || 'No content');
+            
+            // More specific error messages
+            if (messageContent?.includes('The page could not be found')) {
+                throw new Error('API endpoint not found. Please check your deployment configuration.');
+            } else if (messageContent?.includes('Rate limit')) {
+                throw new Error('OpenAI API rate limit exceeded. Please try again later.');
+            } else if (messageContent?.includes('Invalid API key')) {
+                throw new Error('Invalid OpenAI API key. Please check your configuration.');
+            } else {
+                throw new Error('AI service returned invalid response format. Please try again.');
+            }
         }
         
         // Apply content filters based on niche and platforms

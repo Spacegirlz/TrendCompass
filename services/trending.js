@@ -150,8 +150,20 @@ Return this exact JSON:
         
         // Clean up the response and ensure proper bold formatting
         let cleanContent = messageContent ? messageContent.trim() : '';
+        
+        // Check for HTML error responses (common on Vercel)
+        if (cleanContent.includes('<html>') || cleanContent.includes('<!DOCTYPE') || cleanContent.includes('The page could not be found')) {
+            console.error('Received HTML error response:', cleanContent.substring(0, 200));
+            throw new Error('API endpoint error. Please check your deployment configuration and API keys.');
+        }
+        
         if (cleanContent.startsWith('```json')) {
             cleanContent = cleanContent.replace(/```json\n?/g, '').replace(/\n?```$/g, '');
+        }
+        
+        // Remove any remaining markdown formatting
+        if (cleanContent.startsWith('```')) {
+            cleanContent = cleanContent.replace(/```.*?\n/, '').replace(/```\s*$/, '');
         }
         
         // Ensure key terms are properly bolded
@@ -166,8 +178,18 @@ Return this exact JSON:
         } catch (parseError) {
             console.error('JSON parse error:', parseError);
             console.error('Model used:', modelToUse);
-            console.error('Cleaned content:', cleanContent);
-            throw new Error(`${modelToUse} returned invalid JSON format`);
+            console.error('Cleaned content preview:', cleanContent.substring(0, 300));
+            
+            // Provide more helpful error messages
+            if (cleanContent.includes('Rate limit')) {
+                throw new Error('OpenAI API rate limit exceeded. Please try again in a few minutes.');
+            } else if (cleanContent.includes('Invalid API key')) {
+                throw new Error('Invalid OpenAI API key. Please check your environment variables.');
+            } else if (cleanContent.length === 0) {
+                throw new Error('Empty response from AI service. Please try again.');
+            } else {
+                throw new Error(`AI service returned invalid response format. Please check your API configuration.`);
+            }
         }
         
         console.log(`Ultra-specific viral content ideas generated successfully using ${modelToUse}`);

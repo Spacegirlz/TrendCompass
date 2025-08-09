@@ -16,9 +16,29 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors({
+    origin: ['http://localhost:5000', 'https://*.vercel.app', 'https://*.replit.dev'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Add specific headers for Vercel compatibility
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static('public'));
 
 // Routes
@@ -159,9 +179,31 @@ app.post('/api/generate-trends', async (req, res) => {
 
     } catch (error) {
         console.error('Error generating trending ideas:', error);
-        res.status(500).json({ 
-            error: 'Failed to generate trending ideas',
-            details: error.message || 'An unexpected error occurred. Please try again.'
+        
+        // More specific error handling for different scenarios
+        let statusCode = 500;
+        let errorMessage = 'Failed to generate trending ideas';
+        let details = error.message || 'An unexpected error occurred. Please try again.';
+        
+        if (error.message?.includes('API key')) {
+            statusCode = 401;
+            errorMessage = 'API Configuration Error';
+            details = 'OpenAI API key is missing or invalid. Please check your environment variables.';
+        } else if (error.message?.includes('Rate limit')) {
+            statusCode = 429;
+            errorMessage = 'Rate Limit Exceeded';
+            details = 'Too many requests. Please try again in a few minutes.';
+        } else if (error.message?.includes('endpoint')) {
+            statusCode = 503;
+            errorMessage = 'Service Configuration Error';
+            details = 'API endpoints are not properly configured. Please check your deployment.';
+        }
+        
+        res.status(statusCode).json({ 
+            success: false,
+            error: errorMessage,
+            details: details,
+            timestamp: new Date().toISOString()
         });
     }
 });
