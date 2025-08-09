@@ -4,12 +4,19 @@ async function sendEmail(recipientEmail, recipientName, pdfBuffer, csvData) {
     try {
         console.log(`Sending email to ${recipientEmail}...`);
         
+        // Check if email credentials are configured
+        if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+            console.log('Email credentials not configured, skipping email send');
+            console.log('PDF and CSV generated successfully - would be attached to email');
+            return { messageId: 'test-message-id', status: 'skipped - no credentials' };
+        }
+        
         // Create transporter
-        const transporter = nodemailer.createTransporter({
+        const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.GMAIL_USER || 'noreply@example.com',
-                pass: process.env.GMAIL_PASS || 'fake-app-password'
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
             }
         });
         
