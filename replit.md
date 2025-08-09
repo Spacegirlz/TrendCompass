@@ -1,6 +1,6 @@
 # Overview
 
-A luxury viral content strategy generator that creates dual-track (public and private) social media playbooks for content creators. The system generates personalized content strategies with AI-powered recommendations, delivers them as luxury-branded PDF playbooks with CSV exports, and includes automated email delivery and CRM integration.
+A luxury viral content strategy generator that creates dual-track (public and private) social media playbooks for content creators. The system generates personalized content strategies with AI-powered recommendations using OpenAI's GPT-4o model, delivers them as luxury-branded PDF playbooks with CSV exports, and includes automated email delivery and CRM integration.
 
 # User Preferences
 
@@ -30,7 +30,7 @@ Preferred communication style: Simple, everyday language.
 6. **Email Delivery**: Automated email with branded templates and attachments
 
 ## Service Architecture
-- **OpenAI Service**: AI content generation with custom prompts and response formatting
+- **OpenAI Service**: AI content generation with custom prompts and response formatting using GPT-4o
 - **PDF Service**: Puppeteer-based PDF generation with luxury template rendering
 - **Email Service**: Nodemailer integration for automated delivery
 - **Sheets Service**: Google Sheets API integration for CRM data storage

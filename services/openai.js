@@ -2,18 +2,18 @@ const OpenAI = require('openai');
 const { createUniversalPrompt } = require('../utils/prompts');
 const { applyContentFilters } = require('../utils/filters');
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+// GPT-5 was released August 7, 2025 and is now the most advanced model available
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY || 'sk-fake-key-for-development'
 });
 
 async function generateContent(userInputs) {
     try {
-        console.log('Generating AI content with inputs:', userInputs);
+        console.log('Generating AI content with GPT-5 inputs:', userInputs);
         
         const prompt = createUniversalPrompt(userInputs);
         
-        console.log('Sending request to OpenAI...');
+        console.log('Sending request to OpenAI GPT-4o...');
         
         const response = await openai.chat.completions.create({
             model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
@@ -28,13 +28,26 @@ async function generateContent(userInputs) {
                 }
             ],
             response_format: { type: "json_object" },
-            temperature: 0.8,
             max_tokens: 4000
         });
 
         console.log('OpenAI response received');
+        console.log('Raw response content length:', response.choices[0].message.content?.length || 0);
+        console.log('Raw response preview:', response.choices[0].message.content?.substring(0, 200) + '...');
         
-        const rawContent = JSON.parse(response.choices[0].message.content);
+        const messageContent = response.choices[0].message.content;
+        if (!messageContent || messageContent.trim() === '') {
+            throw new Error('Empty response from GPT-5');
+        }
+        
+        let rawContent;
+        try {
+            rawContent = JSON.parse(messageContent);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Failed to parse content:', messageContent);
+            throw new Error('GPT-5 returned invalid JSON format');
+        }
         
         // Apply content filters based on niche and platforms
         const filteredContent = applyContentFilters(rawContent, userInputs);
