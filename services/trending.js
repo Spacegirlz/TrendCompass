@@ -5,49 +5,113 @@ async function generateTrendingIdeas(topic, userLanguage = 'en') {
     try {
         console.log(`Generating specific viral content ideas for: ${topic}`);
         
-        const prompt = `Act as a viral content creator. I need 12 SPECIFIC video titles that I can film immediately about: "${topic}"
+        const prompt = `You will write in ${userLanguage === 'en' ? 'English' : userLanguage}.
 
-RULES:
-- Each must be a complete video title ready for TikTok/YouTube
-- Must include specific numbers, time frames, or shocking claims
-- Use viral formats like "I tried X for Y days", "Doctor reacts to", "POV:", "X things they don't tell you"
-- NO general topics - only specific, filmable content ideas
+You act as an adept web researcher, surfacing a wealth of promising ideas and information relevant to the user's inquiry about: "${topic}"
 
-Examples of what I want:
-"I took saw palmetto for 30 days at age 28 - here's what happened to my prostate"
-"Urologist reacts to viral prostate myths young men believe"
-"POV: You're 25 and your doctor says your prostate is already enlarged"
-"5 signs your prostate is failing at 30 (that doctors miss)"
+You are programmed to consult a diverse array of sources to ensure thoroughness and provide contextually rich, concise summaries.
 
-Create 12 titles like these for "${topic}":
+Output Rules:
+You research the web for mind-blowing, currently high-trending ideas regarding the topic "${topic}".
 
-Response format (JSON):
+You will provide a minimum of 10 ideas in a beautiful table format.
+
+Every single idea should be a standalone idea — independent of all others.
+
+You will not explain how to implement the idea — only give the idea itself.
+
+You always use bold text in effective places.
+
+Your interaction is short and simple.
+
+You use less text and more bullet points.
+
+You maintain a friendly, helpful demeanor.
+
+Formatting Requirements:
+- Idea list → Always in a formatted table with columns: # | Trend Idea | Description
+- Highlight → Use bold for emphasis in titles or key words
+- Language → Match the user's language exactly
+
+Special Notes:
+This GPT is called Viral Trends
+
+You do not provide step-by-step instructions unless explicitly asked.
+You aim for clear, engaging brevity — "short and punchy" is the style.
+
+Please provide exactly this JSON format:
 {
-  "trending_ideas_table": "| # | Video Title | Content Format | Viral Score |",
-  "platform_heatmap": "| Title | TikTok | YouTube | Instagram |", 
-  "top_3_fastest_growing": "Top 3 titles with filming tips",
-  "hook_lines": "Opening lines for top 3 videos"
+  "trending_ideas_table": "markdown table with minimum 10 trending ideas",
+  "platform_heatmap": "markdown table showing platform performance for each trend",
+  "top_3_fastest_growing": "detailed breakdown of the top 3 fastest growing trends",
+  "hook_lines": "successful hook lines and formats for the top trends"
 }`;
 
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o",
-            messages: [
-                {
-                    role: "system", 
-                    content: "You are a viral content strategist. You create specific, actionable video titles that can go viral immediately. Never give general categories - only specific video titles someone can film today."
-                },
-                {
-                    role: "user", 
-                    content: prompt
-                }
-            ],
-            response_format: { type: "json_object" },
-            max_completion_tokens: 3000,
-            temperature: 0.9
-        });
+        // Try GPT-5 first, fallback to GPT-4o if not available
+        let modelToUse = "gpt-5";
+        let response;
+        
+        try {
+            response = await openai.chat.completions.create({
+                model: "gpt-5", // Testing GPT-5 availability
+                messages: [{ role: "user", content: prompt }],
+                response_format: { type: "json_object" },
+                max_tokens: 4000 // Using max_tokens instead of max_completion_tokens for GPT-5
+            });
+            console.log('Successfully used GPT-5 for content generation');
+        } catch (error) {
+            console.log('GPT-5 not available, falling back to GPT-4o:', error.message);
+            modelToUse = "gpt-4o";
+            response = await openai.chat.completions.create({
+                model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+                messages: [{ role: "user", content: prompt }],
+                response_format: { type: "json_object" },
+                max_tokens: 4000
+            });
+        }
 
-        const result = JSON.parse(response.choices[0].message.content);
-        console.log('Specific viral content ideas generated successfully');
+        const messageContent = response.choices[0].message.content;
+        console.log('Raw response content length:', messageContent?.length || 0);
+        console.log('Full raw response content:', messageContent);
+        
+        if (!messageContent || messageContent.trim() === '') {
+            throw new Error(`Empty response from ${modelToUse} model`);
+        }
+        
+        // Try to clean up the response if it has markdown formatting
+        let cleanContent = messageContent.trim();
+        if (cleanContent.startsWith('```json')) {
+            cleanContent = cleanContent.replace(/```json\n?/g, '').replace(/\n?```$/g, '');
+        }
+        
+        let result;
+        try {
+            result = JSON.parse(cleanContent);
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Model used:', modelToUse);
+            console.error('Original content:', messageContent);
+            console.error('Cleaned content:', cleanContent);
+            
+            // Try a fallback with GPT-4o if GPT-5 failed
+            if (modelToUse === "gpt-5") {
+                console.log('GPT-5 JSON parsing failed, trying GPT-4o as backup...');
+                const fallbackResponse = await openai.chat.completions.create({
+                    model: "gpt-4o",
+                    messages: [{ role: "user", content: prompt }],
+                    response_format: { type: "json_object" },
+                    max_tokens: 4000
+                });
+                
+                const fallbackContent = fallbackResponse.choices[0].message.content;
+                result = JSON.parse(fallbackContent);
+                modelToUse = "gpt-4o (fallback)";
+            } else {
+                throw new Error(`${modelToUse} returned invalid JSON format`);
+            }
+        }
+        
+        console.log(`Trending ideas generated successfully using ${modelToUse}`);
         return result;
 
     } catch (error) {

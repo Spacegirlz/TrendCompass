@@ -15,21 +15,46 @@ async function generateContent(userInputs) {
         
         console.log('Sending request to OpenAI GPT-4o...');
         
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-            messages: [
-                {
-                    role: "system",
-                    content: "You are an expert viral content strategist and luxury brand consultant. You specialize in creating dual-track content strategies that work for both public platforms and private member communities. Always provide detailed, actionable, and platform-specific recommendations. Return your response as valid JSON only."
-                },
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
-            response_format: { type: "json_object" },
-            max_tokens: 4000
-        });
+        // Try GPT-5 first, fallback to GPT-4o if not available
+        let modelToUse = "gpt-5";
+        let response;
+        
+        try {
+            response = await openai.chat.completions.create({
+                model: "gpt-5", // Testing GPT-5 availability
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an expert viral content strategist and luxury brand consultant. You specialize in creating dual-track content strategies that work for both public platforms and private member communities. Always provide detailed, actionable, and platform-specific recommendations. Return your response as valid JSON only."
+                    },
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                response_format: { type: "json_object" },
+                max_tokens: 4000
+            });
+            console.log('Successfully used GPT-5 for strategy generation');
+        } catch (error) {
+            console.log('GPT-5 not available, falling back to GPT-4o:', error.message);
+            modelToUse = "gpt-4o";
+            response = await openai.chat.completions.create({
+                model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an expert viral content strategist and luxury brand consultant. You specialize in creating dual-track content strategies that work for both public platforms and private member communities. Always provide detailed, actionable, and platform-specific recommendations. Return your response as valid JSON only."
+                    },
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                response_format: { type: "json_object" },
+                max_tokens: 4000
+            });
+        }
 
         console.log('OpenAI response received');
         console.log('Raw response content length:', response.choices[0].message.content?.length || 0);

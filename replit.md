@@ -46,7 +46,8 @@ Preferred communication style: Simple, everyday language.
 # External Dependencies
 
 ## AI and Content Generation
-- **OpenAI API**: GPT-4o model for content strategy generation
+- **OpenAI API**: GPT-5 model (with GPT-4o fallback) for content strategy generation
+- **GPT-5 Integration**: Successfully implemented GPT-5 with automatic fallback to GPT-4o if unavailable
 - **Handlebars**: Template engine for PDF generation
 - **Puppeteer**: Headless browser for PDF rendering and document generation
 
