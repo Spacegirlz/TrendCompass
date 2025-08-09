@@ -31,10 +31,10 @@ Each title must be a complete video someone can film TODAY with:
 
 Return this exact JSON:
 {
-  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Hook Strategy** |",
-  "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |",
-  "top_3_fastest_growing": "3 most viral-ready video titles with filming instructions",
-  "hook_lines": "exact opening lines for the top 3 videos"
+  "trending_ideas_table": "| # | **Specific Video Title** | **Viral Hook Strategy** | **Content Type** |",
+  "platform_heatmap": "| Video Title | TikTok | YouTube | Instagram |", 
+  "unique_insights": "3 unique filming/content creation insights specific to this topic",
+  "viral_hashtags": "trending hashtag lists optimized for each platform"
 }`;
 
         // Try GPT-5 first, fallback to GPT-4o
@@ -55,8 +55,7 @@ Return this exact JSON:
                     }
                 ],
                 response_format: { type: "json_object" },
-                max_completion_tokens: 4000,
-                temperature: 0.8
+                max_completion_tokens: 4000
             });
             console.log('Successfully used GPT-5 for content generation');
         } catch (error) {
@@ -75,8 +74,7 @@ Return this exact JSON:
                     }
                 ],
                 response_format: { type: "json_object" },
-                max_completion_tokens: 4000,
-                temperature: 0.8
+                max_completion_tokens: 4000
             });
         }
 

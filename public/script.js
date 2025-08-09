@@ -146,17 +146,17 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>`;
         }
         
-        if (data.top_3_fastest_growing) {
+        if (data.unique_insights) {
             html += `<div class="trends-section">
-                <h4>🚀 Top 3 Fastest Growing</h4>
-                <div class="fastest-growing">${convertMarkdownToHTML(data.top_3_fastest_growing)}</div>
+                <h4>💡 Unique Content Creation Insights</h4>
+                <div class="unique-insights">${convertMarkdownToHTML(data.unique_insights)}</div>
             </div>`;
         }
         
-        if (data.hook_lines) {
+        if (data.viral_hashtags) {
             html += `<div class="trends-section">
-                <h4>🎯 Viral Hook Lines & Formats</h4>
-                <div class="hook-lines">${convertMarkdownToHTML(data.hook_lines)}</div>
+                <h4>🏷️ Viral Hashtags by Platform</h4>
+                <div class="viral-hashtags">${convertMarkdownToHTML(data.viral_hashtags)}</div>
             </div>`;
         }
         
