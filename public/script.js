@@ -163,7 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Display trending results
     function displayTrendingResults(result) {
-        const data = result.data;
+        // Handle nested data structure from Perplexity response
+        const data = result.data.data || result.data;
         let html = `<div class="trends-results">
             <h3>🔥 Trending Ideas for "${result.topic}"</h3>
             <div class="trends-content">
@@ -189,8 +190,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.viral_hashtags) {
             html += `<div class="trends-section">
                 <h4>🏷️ Viral Hashtags by Platform</h4>
-                <div class="viral-hashtags">${convertMarkdownToHTML(data.viral_hashtags)}</div>
-            </div>`;
+                <div class="viral-hashtags">`;
+            
+            if (typeof data.viral_hashtags === 'object') {
+                // Handle object format
+                for (const [platform, hashtags] of Object.entries(data.viral_hashtags)) {
+                    html += `<p><strong>${platform}:</strong> ${hashtags}</p>`;
+                }
+            } else {
+                // Handle string format
+                html += convertMarkdownToHTML(data.viral_hashtags);
+            }
+            
+            html += `</div></div>`;
         }
         
         html += `</div></div>`;
