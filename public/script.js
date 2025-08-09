@@ -185,13 +185,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <h4>💡 Unique Content Creation Insights</h4>
                 <div class="unique-insights">`;
             
-            // Split insights into numbered list format
+            // Split insights into numbered list format and clean up references
             const insights = data.unique_insights.split(/\d+\.\s+/).filter(insight => insight.trim());
             insights.forEach((insight, index) => {
                 if (insight.trim()) {
+                    // Remove reference citations like [1][2][4]
+                    const cleanInsight = insight.trim().replace(/\[\d+\](\[\d+\])*/g, '');
                     html += `<div class="insight-item">
                         <span class="insight-number">${index + 1}</span>
-                        <p>${insight.trim()}</p>
+                        <p>${cleanInsight}</p>
                     </div>`;
                 }
             });

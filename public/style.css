@@ -163,6 +163,7 @@
     margin: 0;
     line-height: 1.5;
     color: var(--ink);
+    font-size: 0.9rem;
 }
 
 /* Platform Heatmap Improvements */
