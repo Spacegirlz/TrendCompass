@@ -13,27 +13,32 @@ class ScriptGeneratorService {
 Platform: ${platform}
 Duration: ${duration}
 
+CRITICAL: Write in authentic inner voice - the thoughts people think but don't say out loud. Think like famous hook writers who understand human psychology.
+
 Format as JSON:
 {
-  "hook": "First 3-5 seconds to grab attention",
+  "hook": "First 3-5 seconds - raw, authentic thought that stops the scroll",
   "script": "Complete script with [VISUAL CUES] and timing",
-  "cta": "Strong call-to-action",
+  "cta": "Strong call-to-action that feels natural",
   "thumbnail_text": "Text overlay for thumbnail",
   "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3"],
   "engagement_tactics": ["Comment bait", "Share trigger", "Save trigger"]
 }
 
-Make it ULTRA-SPECIFIC with:
-- Exact words to say in first 3 seconds
-- Visual cues in [BRACKETS]
-- Timing markers (0:05, 0:15, etc.)
-- Psychological hooks that force engagement
-- Platform-specific optimization
+HOOK REQUIREMENTS:
+- Write what someone ACTUALLY thinks, not marketing speak
+- Use raw, honest language people use in their heads
+- Tap into secret fears, desires, or frustrations
+- Make it feel like overhearing a private conversation
+- Reference specific details, not generic categories
 
-Example hook formats:
-- "If you're scrolling past this, you're missing..."
-- "Everyone's doing X wrong, here's the right way..."
-- "I tried X so you don't have to..."`;
+EXAMPLES OF AUTHENTIC HOOKS (study the pattern):
+Topic: Weight Loss → "I'm about to tell you why you're still fat and it's not what you think..."
+Topic: Dating → "Every guy thinks this makes him attractive but it actually makes women run..."
+Topic: Money → "I found out why I'm broke and it has nothing to do with my salary..."
+Topic: Skincare → "Your skincare routine is aging you faster and here's proof..."
+
+For "${viralIdea}" - write a hook that sounds like someone's real internal monologue, not a polished ad.`;
 
         try {
             const response = await this.perplexityService.makeRequest({
@@ -41,7 +46,7 @@ Example hook formats:
                 messages: [
                     {
                         role: "system",
-                        content: "You are a viral video script writer who creates hooks that stop the scroll and scripts that drive massive engagement."
+                        content: "You are a master hook writer who understands human psychology. You write in the authentic inner voice - the raw thoughts people think but don't say out loud. Your hooks sound like overhearing someone's private thoughts, not polished marketing. You study what makes people stop scrolling and tap into secret fears, desires, and frustrations with brutal honesty."
                     },
                     {
                         role: "user",
