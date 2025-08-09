@@ -802,3 +802,192 @@ html, body {
 .loading {
     animation: pulse 2s ease-in-out infinite;
 }
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+    /* Header mobile optimization */
+    .brand h1 {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+        word-break: break-word;
+        hyphens: auto;
+    }
+    
+    .tagline {
+        font-size: 1rem !important;
+        line-height: 1.4;
+        margin-top: 10px;
+    }
+    
+    /* Mode selector mobile */
+    .mode-selector {
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .mode-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        width: 100%;
+    }
+    
+    /* Table mobile optimization */
+    .trends-table {
+        font-size: 0.9rem;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: inset 0 0 0 1px var(--stone);
+        border-radius: 8px;
+    }
+    
+    .trends-table th,
+    .trends-table td {
+        padding: 8px 6px;
+        min-width: 120px;
+    }
+    
+    .trends-table th:first-child,
+    .trends-table td:first-child {
+        min-width: 80px;
+    }
+    
+    .trends-table th:last-child,
+    .trends-table td:last-child {
+        min-width: 100px;
+        width: 100px;
+    }
+    
+    /* Script button mobile */
+    .script-btn {
+        padding: 6px 10px !important;
+        font-size: 0.8rem !important;
+        border-radius: 4px;
+    }
+    
+    /* Script display mobile */
+    .script-display {
+        padding: 20px 15px;
+        margin: 15px 0;
+    }
+    
+    .script-section {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .script-title {
+        font-size: 1.1rem;
+        padding: 12px;
+        word-break: break-word;
+    }
+    
+    .script-content {
+        padding: 12px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    /* Loading progress mobile */
+    .loading-progress {
+        width: 180px;
+    }
+    
+    .loading-text {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small mobile */
+    .brand h1 {
+        font-size: 1.8rem !important;
+        line-height: 1.1;
+    }
+    
+    .tagline {
+        font-size: 0.9rem !important;
+        line-height: 1.3;
+    }
+    
+    .form-container {
+        padding: 20px 15px !important;
+        margin: 15px 0;
+    }
+    
+    .header {
+        padding: 30px 15px !important;
+        margin: 10px 0 20px;
+    }
+    
+    /* Very small screen table */
+    .trends-table {
+        font-size: 0.8rem;
+    }
+    
+    .trends-table th,
+    .trends-table td {
+        padding: 6px 4px;
+        min-width: 100px;
+    }
+    
+    .trends-table th:first-child,
+    .trends-table td:first-child {
+        min-width: 60px;
+    }
+    
+    .trends-table th:last-child,
+    .trends-table td:last-child {
+        min-width: 80px;
+        width: 80px;
+    }
+    
+    .script-btn {
+        padding: 4px 6px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .script-display {
+        padding: 15px 10px;
+    }
+    
+    .script-section {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .script-content {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+    
+    .form-header h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.2;
+    }
+    
+    .loading-progress {
+        width: 140px;
+    }
+    
+    .submit-btn, .luxury-btn, .trends-btn {
+        padding: 16px 20px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* Table scroll hint for mobile */
+@media (max-width: 768px) {
+    .trends-section::after {
+        content: "← Scroll horizontally to see all columns →";
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--gold-soft);
+        margin-top: 10px;
+        opacity: 0.8;
+        font-style: italic;
+    }
+}
