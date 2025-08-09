@@ -78,15 +78,44 @@ Return this exact JSON:
             });
         }
 
-        const messageContent = response.choices[0].message.content;
+        let messageContent = response.choices[0].message.content;
         console.log('Raw response content length:', messageContent?.length || 0);
         
         if (!messageContent || messageContent.trim() === '') {
-            throw new Error(`Empty response from ${modelToUse} model`);
+            console.log(`Empty response from ${modelToUse}, trying fallback...`);
+            if (modelToUse === "gpt-5") {
+                console.log('GPT-5 returned empty response, falling back to GPT-4o...');
+                const fallbackResponse = await openai.chat.completions.create({
+                    model: "gpt-4o",
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a viral content strategist who creates specific, actionable video titles. Never give general categories - only exact video titles someone can film immediately."
+                        },
+                        {
+                            role: "user",
+                            content: prompt
+                        }
+                    ],
+                    response_format: { type: "json_object" },
+                    max_completion_tokens: 4000
+                });
+                
+                const fallbackContent = fallbackResponse.choices[0].message.content;
+                if (!fallbackContent || fallbackContent.trim() === '') {
+                    throw new Error('Both GPT-5 and GPT-4o returned empty responses');
+                }
+                
+                console.log('Successfully used GPT-4o fallback for content generation');
+                messageContent = fallbackContent;
+                modelToUse = "gpt-4o (fallback)";
+            } else {
+                throw new Error(`Empty response from ${modelToUse} model`);
+            }
         }
         
         // Clean up the response and ensure proper bold formatting
-        let cleanContent = messageContent.trim();
+        let cleanContent = messageContent ? messageContent.trim() : '';
         if (cleanContent.startsWith('```json')) {
             cleanContent = cleanContent.replace(/```json\n?/g, '').replace(/\n?```$/g, '');
         }
